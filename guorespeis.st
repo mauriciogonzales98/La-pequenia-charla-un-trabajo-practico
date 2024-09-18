@@ -1,4 +1,7 @@
 ﻿miEmpresa := Empresa new.
 miEmpresa nombre: 'La pequenia charla'.
 miEmpresa nombre.
-"cosacosacosacosa"
+miEmpresa init.
+
+"miEmpresa buscarUsuario: 4."
+(miEmpresa usuarios) size.
