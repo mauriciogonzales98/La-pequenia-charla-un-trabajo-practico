@@ -22,7 +22,7 @@ package globalAliases: (Set new
 	yourself).
 
 package setPrerequisites: #(
-	'Object Arts\Dolphin\Base\Dolphin').
+	'..\Object Arts\Dolphin\Base\Dolphin').
 
 package!
 
@@ -1832,14 +1832,22 @@ Empresa comment: ''!
 !Empresa categoriesForClass!Kernel-Objects! !
 !Empresa methodsFor!
 
+altaUsuario
+"cosas varias que hacen altas a los usuarios"!
+
 nombre
 	^nombre!
 
 nombre: anObject
-	nombre := anObject! !
+	nombre := anObject!
+
+ultraMetodo
+"esto va a ser muy bueno cuando lo haya hecho"! !
 !Empresa categoriesForMethods!
+altaUsuario!public! !
 nombre!accessing!private! !
 nombre:!accessing!private! !
+ultraMetodo!public! !
 !
 
 Reserva guid: (GUID fromString: '{ad159c3f-1363-4554-894d-3c530b420b9b}')!
