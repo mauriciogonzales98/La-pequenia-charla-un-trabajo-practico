@@ -34,12 +34,12 @@ Object subclass: #Empresa
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Object subclass: #Reserva
-	instanceVariableNames: ''
+	instanceVariableNames: 'idRuta fecha idVehiculo cantPasajeros'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Object subclass: #Ruta
-	instanceVariableNames: ''
+	instanceVariableNames: 'id puntoInicio puntoFinal distancia'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -49,17 +49,17 @@ Object subclass: #Usuario
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Object subclass: #Vehiculo
-	instanceVariableNames: ''
+	instanceVariableNames: 'id marca modelo chofer estado maxPasajeros precioKm'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Vehiculo subclass: #Estandar
-	instanceVariableNames: ''
+	instanceVariableNames: 'Descuento'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Vehiculo subclass: #Lujo
-	instanceVariableNames: ''
+	instanceVariableNames: 'Seguro'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -107,9 +107,17 @@ Usuario comment: ''!
 crear
 	nombre:= Prompter prompt: 'Nombre del nuevo usuario'.
 	apellido:= Prompter prompt: 'Apellido del nuevo usuario'.
-	dni:= Prompter prompt: 'Dni del nuevo usuario'.! !
+	dni:= Prompter prompt: 'Dni del nuevo usuario'.!
+
+nombre
+	^nombre.!
+
+nombre: unNombre
+	nombre := unNombre.! !
 !Usuario categoriesForMethods!
 crear!public! !
+nombre!public! !
+nombre:!public! !
 !
 
 Vehiculo guid: (GUID fromString: '{850cd6b3-a183-4f19-9215-7188f6997598}')!
