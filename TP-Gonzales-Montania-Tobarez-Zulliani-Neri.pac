@@ -83,6 +83,18 @@ Empresa comment: ''!
 agregarUsuario: usuario
 	usuarios add: usuario.!
 
+buscarUsuario: dniUsuario
+	"Esto no funciona si no cuentra lo que busca pero no se por que todavia"
+	| i largo|
+	i:=1.
+	largo := usuarios size.
+	[(i < usuarios size) & (((usuarios at: i) dni)~= dniUsuario) ] whileTrue: [ i:=i+1].
+	
+	(largo < i) ifTrue: [i:=0].
+
+	^i.
+!
+
 init
 	usuarios := OrderedCollection new.
 	vehiculos := OrderedCollection new.
@@ -90,6 +102,7 @@ init
 	rutas := OrderedCollection new.! !
 !Empresa categoriesForMethods!
 agregarUsuario:!public! !
+buscarUsuario:!public! !
 init!public! !
 !
 
@@ -109,6 +122,12 @@ crear
 	apellido:= Prompter prompt: 'Apellido del nuevo usuario'.
 	dni:= Prompter prompt: 'Dni del nuevo usuario'.!
 
+dni
+	^dni.!
+
+dni: unDni
+	dni := unDni.!
+
 nombre
 	^nombre.!
 
@@ -116,6 +135,8 @@ nombre: unNombre
 	nombre := unNombre.! !
 !Usuario categoriesForMethods!
 crear!public! !
+dni!public! !
+dni:!public! !
 nombre!public! !
 nombre:!public! !
 !
