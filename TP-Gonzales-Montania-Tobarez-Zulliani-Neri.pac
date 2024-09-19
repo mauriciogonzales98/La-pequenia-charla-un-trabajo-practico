@@ -6,9 +6,12 @@ package paxVersion: 1;
 
 package classNames
 	add: #Empresa;
+	add: #Estandar;
+	add: #Lujo;
 	add: #Reserva;
 	add: #Ruta;
 	add: #Usuario;
+	add: #Vehiculo;
 	yourself.
 
 package binaryGlobalNames: (Set new
@@ -42,6 +45,21 @@ Object subclass: #Ruta
 	classInstanceVariableNames: ''!
 Object subclass: #Usuario
 	instanceVariableNames: 'nombre apellido dni'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+Object subclass: #Vehiculo
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+Vehiculo subclass: #Estandar
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
+Vehiculo subclass: #Lujo
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -94,5 +112,14 @@ crear
 crear!public! !
 !
 
+Vehiculo guid: (GUID fromString: '{850cd6b3-a183-4f19-9215-7188f6997598}')!
+Vehiculo comment: ''!
+!Vehiculo categoriesForClass!Kernel-Objects! !
+Estandar guid: (GUID fromString: '{fd90603d-a96c-41db-ab58-899f82e77bd1}')!
+Estandar comment: ''!
+!Estandar categoriesForClass!Kernel-Objects! !
+Lujo guid: (GUID fromString: '{1b18f29e-807e-4153-a612-6627fb07df15}')!
+Lujo comment: ''!
+!Lujo categoriesForClass!Kernel-Objects! !
 "Binary Globals"!
 
