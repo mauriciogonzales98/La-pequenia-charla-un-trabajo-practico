@@ -18,7 +18,8 @@ package globalAliases: (Set new
 	yourself).
 
 package setPrerequisites: #(
-	'..\Object Arts\Dolphin\Base\Dolphin').
+	'..\Object Arts\Dolphin\Base\Dolphin'
+	'..\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Prompter').
 
 package!
 
@@ -40,7 +41,7 @@ Object subclass: #Ruta
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Object subclass: #Usuario
-	instanceVariableNames: ''
+	instanceVariableNames: 'nombre apellido dni'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -83,5 +84,15 @@ Ruta comment: ''!
 Usuario guid: (GUID fromString: '{8649aac4-806a-42ee-9723-835359330548}')!
 Usuario comment: ''!
 !Usuario categoriesForClass!Kernel-Objects! !
+!Usuario methodsFor!
+
+crear
+	nombre:= Prompter prompt: 'Nombre del nuevo usuario'.
+	apellido:= Prompter prompt: 'Apellido del nuevo usuario'.
+	dni:= Prompter prompt: 'Dni del nuevo usuario'.! !
+!Usuario categoriesForMethods!
+crear!public! !
+!
+
 "Binary Globals"!
 
