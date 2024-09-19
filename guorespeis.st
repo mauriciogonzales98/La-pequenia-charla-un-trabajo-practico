@@ -11,4 +11,8 @@ persona := Usuario new.
 persona dni: 2.
 miEmpresa agregarUsuario: persona.
 
+persona := Usuario new.
+persona dni: 69.
+miEmpresa agregarUsuario: persona.
+
 miEmpresa buscarUsuario: 2.
