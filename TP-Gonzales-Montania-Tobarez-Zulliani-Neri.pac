@@ -21,8 +21,8 @@ package globalAliases: (Set new
 	yourself).
 
 package setPrerequisites: #(
-	'..\..\Core\Object Arts\Dolphin\Base\Dolphin'
-	'..\..\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Prompter').
+	'..\Object Arts\Dolphin\Base\Dolphin'
+	'..\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Prompter').
 
 package!
 
@@ -111,7 +111,6 @@ vehiculo cargaDatos.
 vehiculos add: vehiculo.!
 
 buscarUsuario: dniUsuario
-	"fking cine"
 	| i largo|
 	i:=1.
 	largo := usuarios size.
@@ -120,6 +119,17 @@ buscarUsuario: dniUsuario
 	((largo == i) & ((usuarios at: i)dni ~=dniUsuario)) ifTrue: [i:=0].
 
 	^i.!
+
+buscarVehiculo: pasajeros
+	| i largo|
+	i:=1.
+	largo := vehiculos size.
+	[(i < largo) & (((vehiculos at: i) maxPasajeros )< pasajeros )  ] whileTrue: [ i:=i+1].
+	
+	((largo == i) & ((usuarios at: i)dni <=pasajeros )) ifTrue: [i:=0].
+
+	^i.
+	!
 
 init
 	usuarios := OrderedCollection new.
@@ -143,6 +153,7 @@ altaRuta!public! !
 altaUsuario!public! !
 altaVehiculo!public! !
 buscarUsuario:!public! !
+buscarVehiculo:!public! !
 init!public! !
 menu!public! !
 solicitarReserva!public! !
@@ -280,7 +291,7 @@ estado
 ^estado.!
 
 estado: unEstado
-estado:=unEstado.!
+	estado:=unEstado.!
 
 id
 ^id.
@@ -296,7 +307,12 @@ modelo
 ^modelo.!
 
 precioKm
-^precioKm.! !
+^precioKm.!
+
+toggleEstado
+	| valor |
+	(estado == 1) ifTrue: [valor := 0] ifFalse: [ valor:= 1].
+	estado:= valor.! !
 !Vehiculo categoriesForMethods!
 cargaDatos!public! !
 crear!public! !
@@ -307,6 +323,7 @@ marca!public! !
 maxPasajeros!public! !
 modelo!public! !
 precioKm!public! !
+toggleEstado!public! !
 !
 
 Estandar guid: (GUID fromString: '{fd90603d-a96c-41db-ab58-899f82e77bd1}')!
