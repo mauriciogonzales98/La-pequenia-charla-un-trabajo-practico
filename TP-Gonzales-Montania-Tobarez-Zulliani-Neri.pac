@@ -22,6 +22,7 @@ package globalAliases: (Set new
 
 package setPrerequisites: #(
 	'..\Object Arts\Dolphin\Base\Dolphin'
+	'..\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Choice Prompter'
 	'..\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Prompter').
 
 package!
@@ -138,12 +139,17 @@ init
 	rutas := OrderedCollection new.!
 
 menu
-"Completar"!
+| op  |
+
+op := ChoicePrompter choices: #('1)  Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4)Salir').
+"(op at: 1)."
+^(op first).!
 
 solicitarReserva
-	| ruta pasajeros |
+	| ruta pasajeros id |
 	ruta := Prompter prompt: 'Ingrese id de la ruta'.
-	pasajeros := Prompter prompt: 'Ingrese la cantidad de pasajeros'.
+	pasajeros := Prompter prompt: 'Ingrese la cantidad de pasajeros'. 
+	id := self buscarVehiculo: (pasajeros asNumber ).
 	
 	! !
 !Empresa categoriesForMethods!
@@ -310,9 +316,7 @@ precioKm
 ^precioKm.!
 
 toggleEstado
-	| valor |
-	(estado == 1) ifTrue: [valor := 0] ifFalse: [ valor:= 1].
-	estado:= valor.! !
+	(estado == 1) ifTrue: [self estado: 0] ifFalse: [ self estado: 1 ].! !
 !Vehiculo categoriesForMethods!
 cargaDatos!public! !
 crear!public! !
