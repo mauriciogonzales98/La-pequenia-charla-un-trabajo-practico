@@ -55,13 +55,13 @@ Object subclass: #Vehiculo
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Vehiculo subclass: #Estandar
-	instanceVariableNames: 'Descuento'
-	classVariableNames: ''
+	instanceVariableNames: ''
+	classVariableNames: 'Descuento'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Vehiculo subclass: #Lujo
-	instanceVariableNames: 'Seguro'
-	classVariableNames: ''
+	instanceVariableNames: ''
+	classVariableNames: 'Seguro'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 
@@ -125,11 +125,65 @@ buscarVehiculo: pasajeros
 	| i largo|
 	i:=1.
 	largo := vehiculos size.
-	[(i < largo) & (((vehiculos at: i) maxPasajeros )< pasajeros )  ] whileTrue: [ i:=i+1].
+	[(i < largo) & (((vehiculos at: i) maxPasajeros )>= pasajeros )  ] whileTrue: [ i:=i+1].
 	
-	((largo == i) & ((usuarios at: i)dni <=pasajeros )) ifTrue: [i:=0].
+	((largo == i) & (((vehiculos at: i) maxPasajeros ) < pasajeros) ) ifTrue: [i:=0].
 
 	^i.
+	!
+
+crearDatosDePrueba
+| vehiculo ruta |
+	vehiculo := Estandar new.
+	vehiculo id: 1.
+	vehiculo marca: 'Toyota'.
+	vehiculo modelo: 'Corolla'.
+	vehiculo chofer: 'Juan'.
+	vehiculo estado:  1.
+	vehiculo maxPasajeros: 4.
+	vehiculo precioKm: 40.
+	vehiculos add: vehiculo.
+
+	vehiculo := Lujo new.
+	vehiculo id: 2.
+	vehiculo marca: 'BMW'.
+	vehiculo modelo: '250'.
+	vehiculo chofer: 'Jose'.
+	vehiculo estado:  1.
+	vehiculo maxPasajeros: 3.
+	vehiculo precioKm: 60.
+	vehiculos add: vehiculo.
+
+	vehiculo := Estandar  new.
+	vehiculo id: 2.
+	vehiculo marca: 'Renault'.
+	vehiculo modelo: 'Clio'.
+	vehiculo chofer: 'Mario'.
+	vehiculo estado:  1.
+	vehiculo maxPasajeros: 3.
+	vehiculo precioKm: 38.
+	vehiculos add: vehiculo.
+
+	ruta := Ruta new.
+	ruta id: 1.
+	ruta puntoInicio: 'Rosario'.
+	ruta puntoFinal: 'BsAs'.
+	ruta distancia: 400.
+	rutas add: ruta.
+
+	ruta := Ruta new.
+	ruta id: 2.
+	ruta puntoInicio: 'Rosario'.
+	ruta puntoFinal: 'Cordoba'.
+	ruta distancia: 350.
+	rutas add: ruta.
+
+	ruta := Ruta new.
+	ruta id: 3.
+	ruta puntoInicio: 'Rosario'.
+	ruta puntoFinal: 'Santa Fe'.
+	ruta distancia: 225.
+	rutas add: ruta.
 	!
 
 init
@@ -148,9 +202,8 @@ op := ChoicePrompter choices: #('1)  Solicitar reserva.' '2) Listado de reservas
 solicitarReserva
 	| ruta pasajeros id |
 	ruta := Prompter prompt: 'Ingrese id de la ruta'.
-	pasajeros := Prompter prompt: 'Ingrese la cantidad de pasajeros'. 
-	id := self buscarVehiculo: (pasajeros asNumber ).
-	
+	pasajeros := (Prompter prompt: 'Ingrese la cantidad de pasajeros') asNumber. 
+	id := self buscarVehiculo: pasajeros.
 	! !
 !Empresa categoriesForMethods!
 agregar:!public! !
@@ -160,6 +213,7 @@ altaUsuario!public! !
 altaVehiculo!public! !
 buscarUsuario:!public! !
 buscarVehiculo:!public! !
+crearDatosDePrueba!public! !
 init!public! !
 menu!public! !
 solicitarReserva!public! !
@@ -209,20 +263,36 @@ distancia:= Prompter prompt: 'ingrese la distancia'.!
 distancia
 ^distancia.!
 
+distancia: dist
+	distancia := dist.!
+
 id
 ^id.!
+
+id: unId
+	id:= unId.!
 
 puntoFinal
 ^puntoFinal.!
 
+puntoFinal: final
+	puntoFinal:=final.!
+
 puntoInicio
-^puntoInicio.! !
+^puntoInicio.!
+
+puntoInicio: inicio
+	puntoInicio:= inicio.! !
 !Ruta categoriesForMethods!
 cargaDatos!public! !
 distancia!public! !
+distancia:!public! !
 id!public! !
+id:!public! !
 puntoFinal!public! !
+puntoFinal:!public! !
 puntoInicio!public! !
+puntoInicio:!public! !
 !
 
 Usuario guid: (GUID fromString: '{8649aac4-806a-42ee-9723-835359330548}')!
@@ -278,20 +348,16 @@ id:= Prompter prompt: 'ingrese el id'.
 marca:= Prompter prompt: 'ingrese la marca'.
 modelo:= Prompter prompt: 'ingrese el modelo'.
 chofer:= Prompter prompt: 'ingrese el nombre y apellido del chofer'.
-estado:= 'disponible'. "los posibles estados, según el enunciado, son disponible y no disponible."
+estado:= 1. "los posibles estados, según el enunciado, son disponible y no disponible. 1 para disponible, 0 para no disponible."
 maxPasajeros:= (Prompter prompt: 'ingrese la cantidad máxima de pasajeros')asNumber.
 precioKm:= (Prompter prompt: 'ingrese el precio por kilómetro')asFloat.
 !
 
-crear
-id:= Prompter prompt: 'ingrese el id'.
-marca:= Prompter prompt: 'ingrese la marca'.
-modelo:= Prompter prompt: 'ingrese el modelo'.
-chofer:= Prompter prompt: 'ingrese el nombre y apellido del chofer'.
-estado:= 'disponible'. "los posibles estados, según el enunciado, son disponible y no disponible."
-maxPasajeros:= (Prompter prompt: 'ingrese la cantidad máxima de pasajeros')asNumber.
-precioKm:= (Prompter prompt: 'ingrese el precio por kilómetro')asFloat.
-!
+chofer
+	^chofer.!
+
+chofer: unChofer
+	chofer := unChofer.!
 
 estado
 ^estado.!
@@ -303,30 +369,51 @@ id
 ^id.
 !
 
+id: unId
+ id := unId.!
+
 marca
 ^marca.!
+
+marca:  unaMarca
+	marca := unaMarca.!
 
 maxPasajeros
 ^maxPasajeros.!
 
+maxPasajeros: pasajeros
+	maxPasajeros := pasajeros.!
+
 modelo
 ^modelo.!
 
+modelo: unModelo
+	modelo := unModelo.!
+
 precioKm
 ^precioKm.!
+
+precioKm: precio
+	precioKm := precio.!
 
 toggleEstado
 	(estado == 1) ifTrue: [self estado: 0] ifFalse: [ self estado: 1 ].! !
 !Vehiculo categoriesForMethods!
 cargaDatos!public! !
-crear!public! !
+chofer!public! !
+chofer:!public! !
 estado!public! !
 estado:!public! !
 id!public! !
+id:!public! !
 marca!public! !
+marca:!public! !
 maxPasajeros!public! !
+maxPasajeros:!public! !
 modelo!public! !
+modelo:!public! !
 precioKm!public! !
+precioKm:!public! !
 toggleEstado!public! !
 !
 
