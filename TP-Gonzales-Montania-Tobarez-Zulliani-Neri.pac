@@ -23,6 +23,7 @@ package globalAliases: (Set new
 package setPrerequisites: #(
 	'..\Object Arts\Dolphin\Base\Dolphin'
 	'..\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Choice Prompter'
+	'..\Object Arts\Dolphin\Base\Dolphin Message Box'
 	'..\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Prompter').
 
 package!
@@ -193,11 +194,35 @@ init
 	rutas := OrderedCollection new.!
 
 menu
-| op  |
+| op  res |
 
-op := ChoicePrompter choices: #('1)  Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4)Salir').
+res := ChoicePrompter choices: #('1)  Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4)Salir').
 "(op at: 1)."
-^(op first).!
+op := (res first).
+
+[ op = ($4 ) ] whileFalse: [
+(op == $1) ifTrue: [
+	"miEmpresa solicitarReserva." 
+	| ruta pasajeros id user vehiculo |
+	ruta := Prompter prompt: 'Ingrese id de la ruta'.
+	pasajeros := (Prompter prompt: 'Ingrese la cantidad de pasajeros') asNumber. 
+	vehiculo := self buscarVehiculo: pasajeros.
+	(vehiculo > 0) ifTrue: [
+		user :=Prompter prompt: 'Ingrese su DNI'.
+		res := self buscarUsuario: user.
+		(res = 0) ifTrue: [
+			self altaUsuario.
+		].
+		"Registrar reserva"
+	]
+	ifFalse:[
+		MessageBox notify: 'No hay autos disponibles con esas caracteristicas'.
+	].
+	
+	
+].
+
+]!
 
 solicitarReserva
 	| ruta pasajeros id |
