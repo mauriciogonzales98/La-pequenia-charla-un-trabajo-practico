@@ -197,10 +197,9 @@ menu
 | op  res |
 
 res := ChoicePrompter choices: #('1)  Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4)Salir').
-"(op at: 1)."
 op := (res first).
 
-[ op = ($4 ) ] whileFalse: [
+[ op = $4 ] whileFalse: [
 (op == $1) ifTrue: [
 	"miEmpresa solicitarReserva." 
 	| ruta pasajeros id user vehiculo |
@@ -221,7 +220,8 @@ op := (res first).
 	
 	
 ].
-
+	res := ChoicePrompter choices: #('1)  Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4)Salir').
+	op := (res first).
 ]!
 
 solicitarReserva
