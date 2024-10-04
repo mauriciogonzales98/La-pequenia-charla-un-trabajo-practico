@@ -3,7 +3,6 @@ package := Package name: 'TP-Gonzales-Montania-Tobarez-Zulliani-Neri'.
 package paxVersion: 1;
 	basicComment: ''.
 
-
 package classNames
 	add: #Empresa;
 	add: #Estandar;
@@ -23,6 +22,7 @@ package globalAliases: (Set new
 package setPrerequisites: #(
 	'..\Object Arts\Dolphin\Base\Dolphin'
 	'..\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Choice Prompter'
+	'..\Object Arts\Dolphin\Base\Dolphin Legacy Date & Time'
 	'..\Object Arts\Dolphin\Base\Dolphin Message Box'
 	'..\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Prompter').
 
@@ -35,41 +35,42 @@ Object subclass: #Empresa
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+
 Object subclass: #Reserva
-	instanceVariableNames: 'idRuta fecha idVehiculo cantPasajeros'
+	instanceVariableNames: 'ruta fecha vehiculo cantPasajeros usuario'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+
 Object subclass: #Ruta
 	instanceVariableNames: 'id puntoInicio puntoFinal distancia'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+
 Object subclass: #Usuario
 	instanceVariableNames: 'nombre apellido dni'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+
 Object subclass: #Vehiculo
 	instanceVariableNames: 'id marca modelo chofer estado maxPasajeros precioKm'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+
 Vehiculo subclass: #Estandar
 	instanceVariableNames: ''
 	classVariableNames: 'Descuento'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+
 Vehiculo subclass: #Lujo
 	instanceVariableNames: ''
 	classVariableNames: 'Seguro'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-
-"Global Aliases"!
-
-
-"Loose Methods"!
 
 "End of package definition"!
 
@@ -78,18 +79,58 @@ Vehiculo subclass: #Lujo
 "Classes"!
 
 Empresa guid: (GUID fromString: '{578b5b44-3b71-41f5-b076-a7e82fa15aed}')!
+
 Empresa comment: ''!
+
 !Empresa categoriesForClass!Kernel-Objects! !
+
 !Empresa methodsFor!
 
 agregar: usuario
 usuarios add: usuario.!
 
 altaReserva
+|res pasajeros vehiculo usuario dni fecha idruta ruta|
+
+idruta:= Prompter prompt: 'ingrese el id de la ruta'.
+
+pasajeros := (Prompter prompt: 'Ingrese la cantidad de pasajeros') asNumber.
+vehiculo := self buscarVehiculo: pasajeros.
+vehiculo isNil ifTrue: [^MessageBox notify: 'No hay vehiculos disponibles para la cantidad de pasajeros especificada'] .
+
+res:= Reserva new.
+
+ruta := rutas detect: [ :unaRuta | (unaRuta id ) = idruta ].
+
+res ruta:ruta.
+
+res cantPasajeros: pasajeros.
+
+dni := Prompter prompt: 'ingrese su dni'.
+"El metodo detect devuelve un objeto."
+usuario := usuarios detect: [ :unUsuario | (unUsuario dni ) = dni ] ifNone: [ nil ].
+usuario isNil ifTrue: [self altaUsuario].
+res usuario: usuario.
+
+fecha:= Prompter prompt: 'ingrese la fecha'.
+res fecha: (Date fromString: fecha).
+
+res id: (reservas size) + 1.
+
+reservas add: res.!
+
+altaReserva: cosa
 |res |
 res:= Reserva new.
-res cargaDatos.
-reservas add: res.!
+res ruta: ( Prompter prompt: 'Ingrese id de la ruta').
+res fecha: ((Prompter prompt: 'Ingrese la fecha del viaje')asDate).
+"res ruta: ruta.
+res vehiculo: vehiculo.
+res usuario: usuario."
+
+res cantPasajeros.
+reservas add: res.
+!
 
 altaRuta
 |ruta|
@@ -196,13 +237,15 @@ init
 menu
 | op  res |
 
-res := ChoicePrompter choices: #('1)  Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4)Salir').
+res := ChoicePrompter choices: #('1) Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4) Salir').
 op := (res first).
 
 [ op = $4 ] whileFalse: [
 (op == $1) ifTrue: [
+	
+	self altaReserva.
 	"miEmpresa solicitarReserva." 
-	| ruta pasajeros id user vehiculo |
+	"| ruta pasajeros id user vehiculo |
 	ruta := Prompter prompt: 'Ingrese id de la ruta'.
 	pasajeros := (Prompter prompt: 'Ingrese la cantidad de pasajeros') asNumber. 
 	vehiculo := self buscarVehiculo: pasajeros.
@@ -212,11 +255,11 @@ op := (res first).
 		(res = 0) ifTrue: [
 			self altaUsuario.
 		].
-		"Registrar reserva"
+		self altaReserva: ruta vehiculo: vehiculo usuario: user cantPasajeros: pasajeros.
 	]
-	ifFalse:[
-		MessageBox notify: 'No hay autos disponibles con esas caracteristicas'.
-	].
+
+	ifFalse: [MessageBox notify: 'No hay vehiculos disponibles para la cantidad de pasajeros especificada' ] ."
+	
 	
 	
 ].
@@ -230,9 +273,11 @@ solicitarReserva
 	pasajeros := (Prompter prompt: 'Ingrese la cantidad de pasajeros') asNumber. 
 	id := self buscarVehiculo: pasajeros.
 	! !
+
 !Empresa categoriesForMethods!
 agregar:!public! !
 altaReserva!public! !
+altaReserva:!public! !
 altaRuta!public! !
 altaUsuario!public! !
 altaVehiculo!public! !
@@ -245,38 +290,62 @@ solicitarReserva!public! !
 !
 
 Reserva guid: (GUID fromString: '{e6274a1e-4d74-4b92-b7d5-20065e8fefa7}')!
+
 Reserva comment: ''!
+
 !Reserva categoriesForClass!Kernel-Objects! !
+
 !Reserva methodsFor!
 
 cantPasajeros
 ^cantPasajeros.!
 
-cargaDatos
-idRuta := Prompter prompt: 'ingrese el id de la ruta'.
-fecha:= (Prompter prompt: 'ingrese la fecha ')asDate.
-idVehiculo:= Prompter prompt: 'ingrese el id del vehiculo'.
-cantPasajeros:= (Prompter prompt: 'ingrese la cantidad de pasajeros')asNumber.!
+cantPasajeros: cantidad
+cantPasajeros:=cantidad.!
 
 fecha
 ^fecha.!
 
-idRuta
-^idRuta.!
+fecha: unafecha
+fecha:= unafecha.!
 
-idVehiculo
-^idVehiculo.! !
+ruta
+^ruta.!
+
+ruta: unaruta
+ruta := unaruta.!
+
+usuario
+^usuario!
+
+usuario: unUsuario
+usuario:= unUsuario.!
+
+vehiculo
+^vehiculo.!
+
+vehiculo: unvehiculo
+vehiculo:= unvehiculo.! !
+
 !Reserva categoriesForMethods!
 cantPasajeros!public! !
-cargaDatos!public! !
+cantPasajeros:!public! !
 fecha!public! !
-idRuta!public! !
-idVehiculo!public! !
+fecha:!public! !
+ruta!public! !
+ruta:!public! !
+usuario!public! !
+usuario:!public! !
+vehiculo!public! !
+vehiculo:!public! !
 !
 
 Ruta guid: (GUID fromString: '{25d87daf-3183-48db-af2e-8c2c68e9be6b}')!
+
 Ruta comment: ''!
+
 !Ruta categoriesForClass!Kernel-Objects! !
+
 !Ruta methodsFor!
 
 cargaDatos
@@ -308,6 +377,7 @@ puntoInicio
 
 puntoInicio: inicio
 	puntoInicio:= inicio.! !
+
 !Ruta categoriesForMethods!
 cargaDatos!public! !
 distancia!public! !
@@ -321,8 +391,11 @@ puntoInicio:!public! !
 !
 
 Usuario guid: (GUID fromString: '{8649aac4-806a-42ee-9723-835359330548}')!
+
 Usuario comment: ''!
+
 !Usuario categoriesForClass!Kernel-Objects! !
+
 !Usuario methodsFor!
 
 apellido
@@ -352,6 +425,7 @@ nombre
 
 nombre: unNombre
 	nombre := unNombre.! !
+
 !Usuario categoriesForMethods!
 apellido!public! !
 apellido:!public! !
@@ -364,8 +438,11 @@ nombre:!public! !
 !
 
 Vehiculo guid: (GUID fromString: '{850cd6b3-a183-4f19-9215-7188f6997598}')!
+
 Vehiculo comment: ''!
+
 !Vehiculo categoriesForClass!Kernel-Objects! !
+
 !Vehiculo methodsFor!
 
 cargaDatos
@@ -423,6 +500,7 @@ precioKm: precio
 
 toggleEstado
 	(estado == 1) ifTrue: [self estado: 0] ifFalse: [ self estado: 1 ].! !
+
 !Vehiculo categoriesForMethods!
 cargaDatos!public! !
 chofer!public! !
@@ -443,23 +521,31 @@ toggleEstado!public! !
 !
 
 Estandar guid: (GUID fromString: '{fd90603d-a96c-41db-ab58-899f82e77bd1}')!
+
 Estandar comment: ''!
+
 !Estandar categoriesForClass!Kernel-Objects! !
+
 !Estandar methodsFor!
 
 cargaDatos
 super cargaDatos.! !
+
 !Estandar categoriesForMethods!
 cargaDatos!public! !
 !
 
 Lujo guid: (GUID fromString: '{1b18f29e-807e-4153-a612-6627fb07df15}')!
+
 Lujo comment: ''!
+
 !Lujo categoriesForClass!Kernel-Objects! !
+
 !Lujo methodsFor!
 
 cargaDatos
 super cargaDatos.! !
+
 !Lujo categoriesForMethods!
 cargaDatos!public! !
 !
