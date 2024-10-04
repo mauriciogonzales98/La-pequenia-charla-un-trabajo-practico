@@ -205,10 +205,17 @@ op := (res first).
 
 [ op = $4 ] whileFalse: [
 (op == $1) ifTrue: [
-	
 	self altaReserva.
-	
 ].
+
+(op == $2) ifTrue: [
+	"En construccion"
+].
+
+(op == $3) ifTrue: [
+	"En construccion"
+].
+
 	res := ChoicePrompter choices: #('1)  Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4)Salir').
 	op := (res first).
 ].! !
