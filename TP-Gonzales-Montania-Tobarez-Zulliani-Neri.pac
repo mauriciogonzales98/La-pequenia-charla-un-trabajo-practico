@@ -205,7 +205,11 @@ op := (res first).
 	| ruta pasajeros id user vehiculo |
 	ruta := Prompter prompt: 'Ingrese id de la ruta'.
 	pasajeros := (Prompter prompt: 'Ingrese la cantidad de pasajeros') asNumber. 
-	vehiculo := self buscarVehiculo: pasajeros.
+	"El metodo detect devuelve un objeto."
+	vehiculo := vehiculos detect: [ :unVehiculo | (unVehiculo maxPasajeros) >= pasajeros ] ifNone: [ nil ].
+	vehiculo isNil ifTrue: [^ MessageBox notify: 'No hay autos disponibles con esas caracteristica'].
+	MessageBox notify: vehiculo chofer.
+	"vehiculo := self buscarVehiculo: pasajeros."
 	(vehiculo > 0) ifTrue: [
 		user :=Prompter prompt: 'Ingrese su DNI'.
 		res := self buscarUsuario: user.
