@@ -3,7 +3,6 @@ package := Package name: 'TP-Gonzales-Montania-Tobarez-Zulliani-Neri'.
 package paxVersion: 1;
 	basicComment: ''.
 
-
 package classNames
 	add: #Empresa;
 	add: #Estandar;
@@ -36,41 +35,42 @@ Object subclass: #Empresa
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+
 Object subclass: #Reserva
 	instanceVariableNames: 'ruta fecha vehiculo cantPasajeros usuario'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+
 Object subclass: #Ruta
 	instanceVariableNames: 'id puntoInicio puntoFinal distancia'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+
 Object subclass: #Usuario
 	instanceVariableNames: 'nombre apellido dni'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+
 Object subclass: #Vehiculo
 	instanceVariableNames: 'id marca modelo chofer estado maxPasajeros precioKm'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+
 Vehiculo subclass: #Estandar
 	instanceVariableNames: ''
 	classVariableNames: 'Descuento'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+
 Vehiculo subclass: #Lujo
 	instanceVariableNames: ''
 	classVariableNames: 'Seguro'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-
-"Global Aliases"!
-
-
-"Loose Methods"!
 
 "End of package definition"!
 
@@ -79,8 +79,11 @@ Vehiculo subclass: #Lujo
 "Classes"!
 
 Empresa guid: (GUID fromString: '{578b5b44-3b71-41f5-b076-a7e82fa15aed}')!
+
 Empresa comment: ''!
+
 !Empresa categoriesForClass!Kernel-Objects! !
+
 !Empresa methodsFor!
 
 agregar: usuario
@@ -116,6 +119,19 @@ res id: (reservas size) + 1.
 
 reservas add: res.!
 
+altaReserva: cosa
+|res |
+res:= Reserva new.
+res ruta: ( Prompter prompt: 'Ingrese id de la ruta').
+res fecha: ((Prompter prompt: 'Ingrese la fecha del viaje')asDate).
+"res ruta: ruta.
+res vehiculo: vehiculo.
+res usuario: usuario."
+
+res cantPasajeros.
+reservas add: res.
+!
+
 altaRuta
 |ruta|
 ruta:= Ruta new.
@@ -136,6 +152,27 @@ ifTrue: [vehiculo := Estandar new]
 ifFalse: [vehiculo := Lujo new].
 vehiculo cargaDatos.
 vehiculos add: vehiculo.!
+
+buscarUsuario: dniUsuario
+	| i largo|
+	i:=1.
+	largo := usuarios size.
+	[(i < largo) & (((usuarios at: i) dni)~= dniUsuario)  ] whileTrue: [ i:=i+1].
+	
+	((largo == i) & ((usuarios at: i)dni ~=dniUsuario)) ifTrue: [i:=0].
+
+	^i.!
+
+buscarVehiculo: pasajeros
+	| i largo|
+	i:=1.
+	largo := vehiculos size.
+	[(i < largo) & (((vehiculos at: i) maxPasajeros )>= pasajeros )  ] whileTrue: [ i:=i+1].
+	
+	((largo == i) & (((vehiculos at: i) maxPasajeros ) < pasajeros) ) ifTrue: [i:=0].
+
+	^i.
+	!
 
 crearDatosDePrueba
 | vehiculo ruta |
@@ -205,34 +242,59 @@ op := (res first).
 
 [ op = $4 ] whileFalse: [
 (op == $1) ifTrue: [
+	
 	self altaReserva.
-].
+	"miEmpresa solicitarReserva." 
+	"| ruta pasajeros id user vehiculo |
+	ruta := Prompter prompt: 'Ingrese id de la ruta'.
+	pasajeros := (Prompter prompt: 'Ingrese la cantidad de pasajeros') asNumber. 
+	vehiculo := self buscarVehiculo: pasajeros.
+	(vehiculo > 0) ifTrue: [
+		user :=Prompter prompt: 'Ingrese su DNI'.
+		res := self buscarUsuario: user.
+		(res = 0) ifTrue: [
+			self altaUsuario.
+		].
+		self altaReserva: ruta vehiculo: vehiculo usuario: user cantPasajeros: pasajeros.
+	]
 
-(op == $2) ifTrue: [
-	"En construccion"
+	ifFalse: [MessageBox notify: 'No hay vehiculos disponibles para la cantidad de pasajeros especificada' ] ."
+	
+	
+	
 ].
-
-(op == $3) ifTrue: [
-	"En construccion"
-].
-
 	res := ChoicePrompter choices: #('1)  Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4)Salir').
 	op := (res first).
-].! !
+]!
+
+solicitarReserva
+	| ruta pasajeros id |
+	ruta := Prompter prompt: 'Ingrese id de la ruta'.
+	pasajeros := (Prompter prompt: 'Ingrese la cantidad de pasajeros') asNumber. 
+	id := self buscarVehiculo: pasajeros.
+	! !
+
 !Empresa categoriesForMethods!
 agregar:!public! !
 altaReserva!public! !
+altaReserva:!public! !
 altaRuta!public! !
 altaUsuario!public! !
 altaVehiculo!public! !
+buscarUsuario:!public! !
+buscarVehiculo:!public! !
 crearDatosDePrueba!public! !
 init!public! !
 menu!public! !
+solicitarReserva!public! !
 !
 
 Reserva guid: (GUID fromString: '{e6274a1e-4d74-4b92-b7d5-20065e8fefa7}')!
+
 Reserva comment: ''!
+
 !Reserva categoriesForClass!Kernel-Objects! !
+
 !Reserva methodsFor!
 
 cantPasajeros
@@ -264,6 +326,7 @@ vehiculo
 
 vehiculo: unvehiculo
 vehiculo:= unvehiculo.! !
+
 !Reserva categoriesForMethods!
 cantPasajeros!public! !
 cantPasajeros:!public! !
@@ -278,8 +341,11 @@ vehiculo:!public! !
 !
 
 Ruta guid: (GUID fromString: '{25d87daf-3183-48db-af2e-8c2c68e9be6b}')!
+
 Ruta comment: ''!
+
 !Ruta categoriesForClass!Kernel-Objects! !
+
 !Ruta methodsFor!
 
 cargaDatos
@@ -311,6 +377,7 @@ puntoInicio
 
 puntoInicio: inicio
 	puntoInicio:= inicio.! !
+
 !Ruta categoriesForMethods!
 cargaDatos!public! !
 distancia!public! !
@@ -324,8 +391,11 @@ puntoInicio:!public! !
 !
 
 Usuario guid: (GUID fromString: '{8649aac4-806a-42ee-9723-835359330548}')!
+
 Usuario comment: ''!
+
 !Usuario categoriesForClass!Kernel-Objects! !
+
 !Usuario methodsFor!
 
 apellido
@@ -355,6 +425,7 @@ nombre
 
 nombre: unNombre
 	nombre := unNombre.! !
+
 !Usuario categoriesForMethods!
 apellido!public! !
 apellido:!public! !
@@ -367,8 +438,11 @@ nombre:!public! !
 !
 
 Vehiculo guid: (GUID fromString: '{850cd6b3-a183-4f19-9215-7188f6997598}')!
+
 Vehiculo comment: ''!
+
 !Vehiculo categoriesForClass!Kernel-Objects! !
+
 !Vehiculo methodsFor!
 
 cargaDatos
@@ -426,6 +500,7 @@ precioKm: precio
 
 toggleEstado
 	(estado == 1) ifTrue: [self estado: 0] ifFalse: [ self estado: 1 ].! !
+
 !Vehiculo categoriesForMethods!
 cargaDatos!public! !
 chofer!public! !
@@ -446,25 +521,41 @@ toggleEstado!public! !
 !
 
 Estandar guid: (GUID fromString: '{fd90603d-a96c-41db-ab58-899f82e77bd1}')!
+
 Estandar comment: ''!
+
 !Estandar categoriesForClass!Kernel-Objects! !
+
 !Estandar methodsFor!
 
 cargaDatos
-super cargaDatos.! !
+super cargaDatos.!
+
+esDeLujo
+^False! !
+
 !Estandar categoriesForMethods!
 cargaDatos!public! !
+esDeLujo!public! !
 !
 
 Lujo guid: (GUID fromString: '{1b18f29e-807e-4153-a612-6627fb07df15}')!
+
 Lujo comment: ''!
+
 !Lujo categoriesForClass!Kernel-Objects! !
+
 !Lujo methodsFor!
 
 cargaDatos
-super cargaDatos.! !
+super cargaDatos.!
+
+esDeLujo
+^True! !
+
 !Lujo categoriesForMethods!
 cargaDatos!public! !
+esDeLujo!public! !
 !
 
 "Binary Globals"!
