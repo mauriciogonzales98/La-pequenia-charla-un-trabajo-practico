@@ -92,7 +92,7 @@ altaReserva
 idruta:= Prompter prompt: 'ingrese el id de la ruta'.
 
 pasajeros := (Prompter prompt: 'Ingrese la cantidad de pasajeros') asNumber.
-vehiculo := self buscarVehiculo: pasajeros.
+vehiculo := vehiculos detect: [ :unVehiculo | (unVehiculo maxPasajeros >= pasajeros ) ].
 vehiculo isNil ifTrue: [^MessageBox notify: 'No hay vehiculos disponibles para la cantidad de pasajeros especificada'] .
 
 res:= Reserva new.
