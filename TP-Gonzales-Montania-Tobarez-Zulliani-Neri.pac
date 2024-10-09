@@ -116,19 +116,6 @@ res id: (reservas size) + 1.
 
 reservas add: res.!
 
-altaReserva: cosa
-|res |
-res:= Reserva new.
-res ruta: ( Prompter prompt: 'Ingrese id de la ruta').
-res fecha: ((Prompter prompt: 'Ingrese la fecha del viaje')asDate).
-"res ruta: ruta.
-res vehiculo: vehiculo.
-res usuario: usuario."
-
-res cantPasajeros.
-reservas add: res.
-!
-
 altaRuta
 |ruta|
 ruta:= Ruta new.
@@ -149,27 +136,6 @@ ifTrue: [vehiculo := Estandar new]
 ifFalse: [vehiculo := Lujo new].
 vehiculo cargaDatos.
 vehiculos add: vehiculo.!
-
-buscarUsuario: dniUsuario
-	| i largo|
-	i:=1.
-	largo := usuarios size.
-	[(i < largo) & (((usuarios at: i) dni)~= dniUsuario)  ] whileTrue: [ i:=i+1].
-	
-	((largo == i) & ((usuarios at: i)dni ~=dniUsuario)) ifTrue: [i:=0].
-
-	^i.!
-
-buscarVehiculo: pasajeros
-	| i largo|
-	i:=1.
-	largo := vehiculos size.
-	[(i < largo) & (((vehiculos at: i) maxPasajeros )>= pasajeros )  ] whileTrue: [ i:=i+1].
-	
-	((largo == i) & (((vehiculos at: i) maxPasajeros ) < pasajeros) ) ifTrue: [i:=0].
-
-	^i.
-	!
 
 crearDatosDePrueba
 | vehiculo ruta |
@@ -231,6 +197,16 @@ init
 	reservas := OrderedCollection new.
 	rutas := OrderedCollection new.!
 
+listarReservas: fechaInicio hasta: fechaFin
+	|res|
+	res :=reservas select: [ :unaRes | [unaRes fecha >= fechaInicio] and: [unaRes fecha <= fechaFin ] ].
+	res := reservas asSortedCollection: [ :unaRes :otraRes | unaRes fecha > otraRes fecha ].
+	Transcript show: 'Reservas entre', fechaInicio, ' y ', fechaFin; cr.
+	res do: [ :unaRes |
+		unaRes mostrar.
+		Transcript cr.
+	]!
+
 menu
 | op  res |
 
@@ -273,14 +249,12 @@ solicitarReserva
 !Empresa categoriesForMethods!
 agregar:!public! !
 altaReserva!public! !
-altaReserva:!public! !
 altaRuta!public! !
 altaUsuario!public! !
 altaVehiculo!public! !
-buscarUsuario:!public! !
-buscarVehiculo:!public! !
 crearDatosDePrueba!public! !
 init!public! !
+listarReservas:hasta:!public! !
 menu!public! !
 solicitarReserva!public! !
 !
