@@ -309,6 +309,17 @@ fecha
 fecha: unafecha
 fecha:= unafecha.!
 
+mostrar
+fecha printString.
+(usuario nombre)printString.
+(usuario apellido) printString.
+(ruta puntoInicio) printString.
+(ruta puntoFinal) printString.
+(ruta distancia) printString.
+(vehiculo esDeLujo) ifTrue: ['de Lujo'printString]ifFalse:['estandar'printString].
+(vehiculo id)printString.
+!
+
 ruta
 ^ruta.!
 
@@ -316,7 +327,8 @@ ruta: unaruta
 ruta := unaruta.!
 
 usuario
-^usuario!
+^usuario
+"Esto guarda el objeto del usuario"!
 
 usuario: unUsuario
 usuario:= unUsuario.!
@@ -332,6 +344,7 @@ cantPasajeros!public! !
 cantPasajeros:!public! !
 fecha!public! !
 fecha:!public! !
+mostrar!public! !
 ruta!public! !
 ruta:!public! !
 usuario!public! !
@@ -532,7 +545,7 @@ cargaDatos
 super cargaDatos.!
 
 esDeLujo
-^False! !
+^false! !
 
 !Estandar categoriesForMethods!
 cargaDatos!public! !
@@ -551,7 +564,7 @@ cargaDatos
 super cargaDatos.!
 
 esDeLujo
-^True! !
+^true! !
 
 !Lujo categoriesForMethods!
 cargaDatos!public! !

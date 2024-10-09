@@ -13,7 +13,10 @@ miEmpresa agregar: persona.
 persona := Usuario new.
 persona dni: 69.
 miEmpresa agregar: persona.
-
+"
+miEmpresa crearDatosDePrueba.
+miEmpresa altaReserva.
+miEmpresa" 
 "
 miEmpresa altaUsuario.
 miEmpresa altaUsuario.
