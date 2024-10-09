@@ -89,24 +89,28 @@ usuarios add: usuario.!
 altaReserva
 |res pasajeros vehiculo usuario dni fecha idRuta ruta|
 
-idRuta:= (Prompter prompt: 'ingrese el id de la ruta') asNumber .
+idRuta := (Prompter prompt: 'ingrese el id de la ruta') asNumber.
 
 pasajeros := (Prompter prompt: 'Ingrese la cantidad de pasajeros') asNumber.
 vehiculo := vehiculos detect: [ :unVehiculo | (unVehiculo maxPasajeros >= pasajeros ) ] ifNone: [ nil ].
-vehiculo isNil ifTrue: [^MessageBox notify: 'No hay vehiculos disponibles para la cantidad de pasajeros especificada'] .
+(vehiculo isNil) ifTrue: [^MessageBox notify: 'No hay vehiculos disponibles para la cantidad de pasajeros especificada'] .
 
 res:= Reserva new.
 
 ruta := rutas detect: [ :unaRuta | (unaRuta id ) = idRuta ].
 
 res ruta: ruta.
-
+res vehiculo: vehiculo.
 res cantPasajeros: pasajeros.
 
 dni := Prompter prompt: 'ingrese su dni'.
 "El metodo detect devuelve un objeto."
 usuario := usuarios detect: [ :unUsuario | (unUsuario dni ) = dni ] ifNone: [ nil ].
-usuario isNil ifTrue: [self altaUsuario].
+(usuario isNil) ifTrue: [
+self altaUsuario.
+usuario := usuarios detect: [ :unUsuario | (unUsuario dni ) = dni ].
+].
+
 res usuario: usuario.
 
 fecha:= Prompter prompt: 'ingrese la fecha'.
@@ -114,6 +118,7 @@ res fecha: (Date fromString: fecha).
 
 Reserva incrementarId.
 res id: Reserva Id.
+
 reservas add: res.!
 
 altaRuta
@@ -188,8 +193,7 @@ crearDatosDePrueba
 	ruta puntoInicio: 'Rosario'.
 	ruta puntoFinal: 'Santa Fe'.
 	ruta distancia: 225.
-	rutas add: ruta.
-	!
+	rutas add: ruta.!
 
 init
 	usuarios := OrderedCollection new.
@@ -200,8 +204,8 @@ init
 
 listarReservas: fechaInicio hasta: fechaFin
 	|res|
-	res :=reservas select: [ :unaRes | [unaRes fecha >= fechaInicio] and: [unaRes fecha <= fechaFin ] ].
-	res := reservas asSortedCollection: [ :unaRes :otraRes | unaRes fecha > otraRes fecha ].
+	res :=reservas select: [ :unaRes | ((unaRes fecha) >= fechaInicio) and: [(unaRes fecha) <= fechaFin ] ].
+	res := reservas asSortedCollection: [ :unaRes :otraRes | (unaRes fecha > otraRes fecha) ].
 	Transcript show: 'Reservas desde ', (fechaInicio printString), ' y ', (fechaFin printString) ; cr.
 	"Transcript show: 'Reservas entre', (fechaInicio asString), ' y ', (fechaFin asString); cr."
 	res do: [ :unaRes |
@@ -227,13 +231,13 @@ op := (res first).
 	fechaFin := Date fromString: fechaFin."
 	
 	"Esto hay que borrarlo, es solo para probarlo mas facil"
-	fechaInicio := Date fromString: '1/1/1990'.
-	fechaFin := Date fromString: '31/12/2024'.
+	fechaInicio := Date fromString: '01/01/1990'.
+	fechaFin := Date fromString: '31/12/2026'.
 	self listarReservas: fechaInicio hasta: fechaFin.
 ].
 	res := ChoicePrompter choices: #('1)  Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4)Salir').
 	op := (res first).
-]!
+].!
 
 solicitarReserva
 	| ruta pasajeros id |
@@ -278,13 +282,15 @@ id: unId
  id := unId.!
 
 mostrar
-	fecha printString.
-	(usuario nombre)printString.
-	(usuario apellido) printString.
-	(ruta puntoInicio) printString.
-	(ruta puntoFinal) printString.
-	(ruta distancia) printString.
-	(vehiculo esDeLujo) ifTrue: ['de Lujo'printString] ifFalse:['estandar'printString].
+	| tipo |
+	(vehiculo esDeLujo) ifTrue: [tipo := 'de Lujo'] ifFalse:[ tipo :='estandar'].
+	Transcript show: fecha printString,
+	(usuario nombre)printString, 
+	(usuario apellido) printString, 
+	(ruta puntoInicio) printString,
+	(ruta puntoFinal) printString,
+	(ruta distancia) printString,
+	tipo,
 	(vehiculo id)printString.!
 
 ruta
