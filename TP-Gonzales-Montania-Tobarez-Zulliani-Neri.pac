@@ -37,8 +37,8 @@ Object subclass: #Empresa
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Object subclass: #Reserva
-	instanceVariableNames: 'ruta fecha vehiculo cantPasajeros usuario'
-	classVariableNames: ''
+	instanceVariableNames: 'ruta fecha vehiculo cantPasajeros usuario id'
+	classVariableNames: 'Id'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
 Object subclass: #Ruta
@@ -87,19 +87,19 @@ agregar: usuario
 usuarios add: usuario.!
 
 altaReserva
-|res pasajeros vehiculo usuario dni fecha idruta ruta|
+|res pasajeros vehiculo usuario dni fecha idRuta ruta|
 
-idruta:= Prompter prompt: 'ingrese el id de la ruta'.
+idRuta:= (Prompter prompt: 'ingrese el id de la ruta') asNumber .
 
 pasajeros := (Prompter prompt: 'Ingrese la cantidad de pasajeros') asNumber.
-vehiculo := vehiculos detect: [ :unVehiculo | (unVehiculo maxPasajeros >= pasajeros ) ].
+vehiculo := vehiculos detect: [ :unVehiculo | (unVehiculo maxPasajeros >= pasajeros ) ] ifNone: [ nil ].
 vehiculo isNil ifTrue: [^MessageBox notify: 'No hay vehiculos disponibles para la cantidad de pasajeros especificada'] .
 
 res:= Reserva new.
 
-ruta := rutas detect: [ :unaRuta | (unaRuta id ) = idruta ].
+ruta := rutas detect: [ :unaRuta | (unaRuta id ) = idRuta ].
 
-res ruta:ruta.
+res ruta: ruta.
 
 res cantPasajeros: pasajeros.
 
@@ -112,8 +112,8 @@ res usuario: usuario.
 fecha:= Prompter prompt: 'ingrese la fecha'.
 res fecha: (Date fromString: fecha).
 
-res id: (reservas size) + 1.
-
+Reserva incrementarId.
+res id: Reserva Id.
 reservas add: res.!
 
 altaRuta
@@ -195,7 +195,8 @@ init
 	usuarios := OrderedCollection new.
 	vehiculos := OrderedCollection new.
 	reservas := OrderedCollection new.
-	rutas := OrderedCollection new.!
+	rutas := OrderedCollection new.
+	Reserva inicializarId.!
 
 listarReservas: fechaInicio hasta: fechaFin
 	|res|
@@ -203,10 +204,10 @@ listarReservas: fechaInicio hasta: fechaFin
 	res := reservas asSortedCollection: [ :unaRes :otraRes | unaRes fecha > otraRes fecha ].
 	Transcript show: 'Reservas desde ', (fechaInicio printString), ' y ', (fechaFin printString) ; cr.
 	"Transcript show: 'Reservas entre', (fechaInicio asString), ' y ', (fechaFin asString); cr."
-	"res do: [ :unaRes |
+	res do: [ :unaRes |
 		unaRes mostrar.
 		Transcript cr.
-	]"!
+	].!
 
 menu
 | op  res fechaInicio fechaFin|
@@ -270,26 +271,30 @@ fecha
 fecha: unafecha
 fecha:= unafecha.!
 
+id
+	^id.!
+
+id: unId
+ id := unId.!
+
 mostrar
-fecha printString.
-(usuario nombre)printString.
-(usuario apellido) printString.
-(ruta puntoInicio) printString.
-(ruta puntoFinal) printString.
-(ruta distancia) printString.
-(vehiculo esDeLujo) ifTrue: ['de Lujo'printString]ifFalse:['estandar'printString].
-(vehiculo id)printString.
-!
+	fecha printString.
+	(usuario nombre)printString.
+	(usuario apellido) printString.
+	(ruta puntoInicio) printString.
+	(ruta puntoFinal) printString.
+	(ruta distancia) printString.
+	(vehiculo esDeLujo) ifTrue: ['de Lujo'printString] ifFalse:['estandar'printString].
+	(vehiculo id)printString.!
 
 ruta
 ^ruta.!
 
-ruta: unaruta
-ruta := unaruta.!
+ruta: unaRuta
+ruta := unaRuta.!
 
 usuario
-^usuario
-"Esto guarda el objeto del usuario"!
+^usuario!
 
 usuario: unUsuario
 usuario:= unUsuario.!
@@ -304,6 +309,8 @@ cantPasajeros!public! !
 cantPasajeros:!public! !
 fecha!public! !
 fecha:!public! !
+id!public! !
+id:!public! !
 mostrar!public! !
 ruta!public! !
 ruta:!public! !
@@ -311,6 +318,22 @@ usuario!public! !
 usuario:!public! !
 vehiculo!public! !
 vehiculo:!public! !
+!
+
+!Reserva class methodsFor!
+
+Id
+ ^Id.!
+
+incrementarId
+	Id := Id + 1.!
+
+inicializarId
+	Id := 0.! !
+!Reserva class categoriesForMethods!
+Id!public! !
+incrementarId!public! !
+inicializarId!public! !
 !
 
 Ruta guid: (GUID fromString: '{25d87daf-3183-48db-af2e-8c2c68e9be6b}')!
@@ -491,10 +514,6 @@ super cargaDatos.!
 
 esDeLujo
 ^false! !
-<<<<<<< HEAD
-
-=======
->>>>>>> 458eeff449b4beeb0492ff458e16c48da052a1f9
 !Estandar categoriesForMethods!
 cargaDatos!public! !
 esDeLujo!public! !
@@ -510,10 +529,6 @@ super cargaDatos.!
 
 esDeLujo
 ^true! !
-<<<<<<< HEAD
-
-=======
->>>>>>> 458eeff449b4beeb0492ff458e16c48da052a1f9
 !Lujo categoriesForMethods!
 cargaDatos!public! !
 esDeLujo!public! !
