@@ -201,40 +201,34 @@ listarReservas: fechaInicio hasta: fechaFin
 	|res|
 	res :=reservas select: [ :unaRes | [unaRes fecha >= fechaInicio] and: [unaRes fecha <= fechaFin ] ].
 	res := reservas asSortedCollection: [ :unaRes :otraRes | unaRes fecha > otraRes fecha ].
-	Transcript show: 'Reservas entre', (fechaInicio asString), ' y ', (fechaFin asString); cr.
-	res do: [ :unaRes |
+	Transcript show: 'Reservas desde ', (fechaInicio printString), ' y ', (fechaFin printString) ; cr.
+	"Transcript show: 'Reservas entre', (fechaInicio asString), ' y ', (fechaFin asString); cr."
+	"res do: [ :unaRes |
 		unaRes mostrar.
 		Transcript cr.
-	]!
+	]"!
 
 menu
-| op  res |
+| op  res fechaInicio fechaFin|
 
 res := ChoicePrompter choices: #('1) Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4) Salir').
 op := (res first).
 
 [ op = $4 ] whileFalse: [
 (op == $1) ifTrue: [
-	
 	self altaReserva.
-	"miEmpresa solicitarReserva." 
-	"| ruta pasajeros id user vehiculo |
-	ruta := Prompter prompt: 'Ingrese id de la ruta'.
-	pasajeros := (Prompter prompt: 'Ingrese la cantidad de pasajeros') asNumber. 
-	vehiculo := self buscarVehiculo: pasajeros.
-	(vehiculo > 0) ifTrue: [
-		user :=Prompter prompt: 'Ingrese su DNI'.
-		res := self buscarUsuario: user.
-		(res = 0) ifTrue: [
-			self altaUsuario.
-		].
-		self altaReserva: ruta vehiculo: vehiculo usuario: user cantPasajeros: pasajeros.
-	]
+].
+(op == $2) ifTrue: [
+	"fechaInicio := Prompter prompt: 'Ingrese la fecha de inicio'.
+	fechaInicio := Date fromString: fechaInicio.
 
-	ifFalse: [MessageBox notify: 'No hay vehiculos disponibles para la cantidad de pasajeros especificada' ] ."
+	fechaFin := Prompter prompt: 'Ingrese la fecha de fin'.
+	fechaFin := Date fromString: fechaFin."
 	
-	
-	
+	"Esto hay que borrarlo, es solo para probarlo mas facil"
+	fechaInicio := Date fromString: '1/1/1990'.
+	fechaFin := Date fromString: '31/12/2024'.
+	self listarReservas: fechaInicio hasta: fechaFin.
 ].
 	res := ChoicePrompter choices: #('1)  Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4)Salir').
 	op := (res first).
