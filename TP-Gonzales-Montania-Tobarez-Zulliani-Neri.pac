@@ -201,7 +201,7 @@ listarReservas: fechaInicio hasta: fechaFin
 	|res|
 	res :=reservas select: [ :unaRes | [unaRes fecha >= fechaInicio] and: [unaRes fecha <= fechaFin ] ].
 	res := reservas asSortedCollection: [ :unaRes :otraRes | unaRes fecha > otraRes fecha ].
-	Transcript show: 'Reservas entre', fechaInicio, ' y ', fechaFin; cr.
+	Transcript show: 'Reservas entre', (fechaInicio asString), ' y ', (fechaFin asString); cr.
 	res do: [ :unaRes |
 		unaRes mostrar.
 		Transcript cr.
