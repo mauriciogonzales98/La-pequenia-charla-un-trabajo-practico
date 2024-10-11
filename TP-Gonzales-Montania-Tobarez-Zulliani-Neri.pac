@@ -211,7 +211,8 @@ listarReservas: fechaInicio hasta: fechaFin
 	res do: [ :unaRes |
 		unaRes mostrar.
 		Transcript cr.
-	].!
+	].
+	!
 
 menu
 | op  res fechaInicio fechaFin|
@@ -284,14 +285,14 @@ id: unId
 mostrar
 	| tipo |
 	(vehiculo esDeLujo) ifTrue: [tipo := 'de Lujo'] ifFalse:[ tipo :='estandar'].
-	Transcript show: fecha printString,
-	(usuario nombre)printString, 
-	(usuario apellido) printString, 
-	(ruta puntoInicio) printString,
-	(ruta puntoFinal) printString,
-	(ruta distancia) printString,
-	tipo,
-	(vehiculo id)printString.!
+	Transcript show: (fecha printString), ' ',
+	(usuario nombre),  ' ',
+	(usuario apellido) , ' ', 
+	(ruta puntoInicio) , '-',
+	(ruta puntoFinal) , ' ',
+	'Distancia: ', (ruta distancia) printString , ' ',
+	'Vehiculo: ' ,((vehiculo id) printString) , ' ',
+	tipo, ' '.!
 
 ruta
 ^ruta.!
@@ -351,7 +352,7 @@ cargaDatos
 id:= Prompter prompt: 'ingrese el id'.
 puntoInicio:= Prompter prompt: 'ingrese el punto de inicio'.
 puntoFinal:= Prompter prompt: 'ingrese el punto final'.
-distancia:= Prompter prompt: 'ingrese la distancia'.!
+distancia:= (Prompter prompt: 'ingrese la distancia') asNumber.!
 
 distancia
 ^distancia.!
@@ -515,13 +516,9 @@ Estandar comment: ''!
 !Estandar categoriesForClass!Kernel-Objects! !
 !Estandar methodsFor!
 
-cargaDatos
-super cargaDatos.!
-
 esDeLujo
 ^false! !
 !Estandar categoriesForMethods!
-cargaDatos!public! !
 esDeLujo!public! !
 !
 
@@ -530,13 +527,9 @@ Lujo comment: ''!
 !Lujo categoriesForClass!Kernel-Objects! !
 !Lujo methodsFor!
 
-cargaDatos
-super cargaDatos.!
-
 esDeLujo
 ^true! !
 !Lujo categoriesForMethods!
-cargaDatos!public! !
 esDeLujo!public! !
 !
 
