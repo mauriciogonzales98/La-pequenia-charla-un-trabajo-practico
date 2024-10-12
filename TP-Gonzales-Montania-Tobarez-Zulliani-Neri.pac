@@ -209,7 +209,7 @@ listarReservas: fechaInicio hasta: fechaFin
 	|res|
 	res :=reservas select: [ :unaRes | ((unaRes fecha) >= fechaInicio) and: [(unaRes fecha) <= fechaFin ] ].
 	res := reservas asSortedCollection: [ :unaRes :otraRes | (unaRes fecha > otraRes fecha) ].
-	Transcript show: 'Reservas desde ', (fechaInicio printString), 'hasta', (fechaFin printString) ; cr.
+	Transcript show: 'Reservas desde ', (fechaInicio printString), 'hasta ', (fechaFin printString) ; cr.
 	"Transcript show: 'Reservas entre', (fechaInicio asString), ' y ', (fechaFin asString); cr."
 	res do: [ :unaRes |
 		unaRes mostrar.
@@ -236,7 +236,7 @@ op := (res first).
 	
 	"Esto hay que borrarlo, es solo para probarlo mas facil"
 	fechaInicio := Date fromString:( Prompter prompt: 'mostrar reservas desde (dd/mm/aaaa)').
-	fechaFin := Date fromString: (Prompter prompt: 'mostrar reservas hasta (dd/mm/aaaa').
+	fechaFin := Date fromString: (Prompter prompt: 'mostrar reservas hasta (dd/mm/aaaa)').
 	self listarReservas: fechaInicio hasta: fechaFin.
 ].
 	res := ChoicePrompter choices: #('1)  Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4) Agregar Usuario' '5) Agregar Ruta' '6)Salir').
