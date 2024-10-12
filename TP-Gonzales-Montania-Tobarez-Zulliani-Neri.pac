@@ -220,10 +220,10 @@ listarReservas: fechaInicio hasta: fechaFin
 menu
 | op  res fechaInicio fechaFin|
 
-res := ChoicePrompter choices: #('1) Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4) Salir').
+res := ChoicePrompter choices: #('1)  Solicitar Reserva.' '2) Listado de Reservas.' '3) Agregar vehiculo.' '4) Agregar Usuario.' '5) Agregar Ruta.' '6) Salir.').
 op := (res first).
 
-[ op = $4 ] whileFalse: [
+[ op = $6 ] whileFalse: [
 (op == $1) ifTrue: [
 	self altaReserva.
 ].
@@ -239,7 +239,16 @@ op := (res first).
 	fechaFin := Date fromString: (Prompter prompt: 'mostrar reservas hasta (dd/mm/aaaa)').
 	self listarReservas: fechaInicio hasta: fechaFin.
 ].
-	res := ChoicePrompter choices: #('1)  Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4) Agregar Usuario' '5) Agregar Ruta' '6)Salir').
+(op== $3)ifTrue: [
+	self altaVehiculo
+ ].
+(op== $4)ifTrue: [
+	self altaUsuario
+ ].
+(op== $5)ifTrue: [
+	self altaRuta
+ ].
+	res := ChoicePrompter choices: #('1)  Solicitar Reserva.' '2) Listado de Reservas.' '3) Agregar vehiculo.' '4) Agregar Usuario.' '5) Agregar Ruta.' '6) Salir.').
 	op := (res first).
 ].!
 
