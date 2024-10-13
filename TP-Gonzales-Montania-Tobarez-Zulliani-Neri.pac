@@ -90,7 +90,7 @@ agregar: usuario
 usuarios add: usuario.!
 
 altaReserva
-|res pasajeros vehiculo usuario dni fecha idRuta ruta|
+|res pasajeros vehiculo usuario dni fecha idRuta ruta precio|
 
 idRuta := (Prompter prompt: 'ingrese el id de la ruta') asNumber.
 
@@ -101,7 +101,7 @@ vehiculo := vehiculos detect: [ :unVehiculo | (unVehiculo maxPasajeros >= pasaje
 res:= Reserva new.
 
 ruta := rutas detect: [ :unaRuta | (unaRuta id ) = idRuta ].
-"Falta cambiar estado del vehículo guardado en la reserva como no disponible"
+vehiculo toggleEstado.
 res ruta: ruta.
 res vehiculo: vehiculo.
 res cantPasajeros: pasajeros.
@@ -116,12 +116,26 @@ usuario := usuarios detect: [ :unUsuario | (unUsuario dni ) = dni ].
 
 res usuario: usuario.
 
-fecha:= Prompter prompt: 'ingrese la fecha'.
+fecha:= Prompter prompt: 'ingrese la fecha en que desea reservar el vehículo (dd/mm/aaaa)'.
 res fecha: (Date fromString: fecha).
 
 Reserva incrementarId.
 res id: Reserva Id.
 
+"Calculo de precio"
+(vehiculo esDeLujo) ifTrue: [ 
+	precio:= vehiculo precioKm + Lujo Seguro.
+	Transcript show: (precio)printString.
+] ifFalse: [
+	(ruta distancia >= 500) ifTrue: [
+precio:=(vehiculo precioKm - ( vehiculo precioKm * Estandar Descuento))
+	]
+	ifFalse:[
+	precio:=(vehiculo precioKm)
+	]
+].
+"Muestro el precio"
+Transcript show: 'El precio de su viaje es de $', (precio)printString, ' pesos'.
 reservas add: res.!
 
 altaRuta
@@ -146,7 +160,7 @@ vehiculo cargaDatos.
 vehiculos add: vehiculo.!
 
 crearDatosDePrueba
-| vehiculo ruta |
+| vehiculo ruta usuario |
 	vehiculo := Estandar new.
 	vehiculo id: 1.
 	vehiculo marca: 'Toyota'.
@@ -196,7 +210,25 @@ crearDatosDePrueba
 	ruta puntoInicio: 'Rosario'.
 	ruta puntoFinal: 'Santa Fe'.
 	ruta distancia: 225.
-	rutas add: ruta.!
+	rutas add: ruta.
+
+	usuario:= Usuario new.
+	usuario dni: '1'.
+	usuario nombre: 'Pedro'.
+	usuario apellido: ' De Mendoza'.
+	usuarios add:usuario.
+
+	usuario:= Usuario new.
+	usuario dni: '2'.
+	usuario nombre:  'Franco'.
+	usuario apellido:  'Colapinto'.
+	usuarios add:usuario.
+
+	usuario:= Usuario new.
+	usuario dni: '1'.
+	usuario nombre:  'Marco'.
+	usuario apellido: 'Aurelio'.
+	usuarios add:usuario.!
 
 init
 	usuarios := OrderedCollection new.
@@ -209,7 +241,7 @@ listarReservas: fechaInicio hasta: fechaFin
 	|res|
 	res :=reservas select: [ :unaRes | ((unaRes fecha) >= fechaInicio) and: [(unaRes fecha) <= fechaFin ] ].
 	res := reservas asSortedCollection: [ :unaRes :otraRes | (unaRes fecha > otraRes fecha) ].
-	Transcript show: 'Reservas desde ', (fechaInicio printString), 'hasta', (fechaFin printString) ; cr.
+	Transcript show: 'Reservas desde ', (fechaInicio printString), '    ',  'hasta ', (fechaFin printString) ; cr.
 	"Transcript show: 'Reservas entre', (fechaInicio asString), ' y ', (fechaFin asString); cr."
 	res do: [ :unaRes |
 		unaRes mostrar.
@@ -235,7 +267,7 @@ op := (res first).
 	fechaFin := Date fromString: fechaFin."
 	
 	fechaInicio := Date fromString:( Prompter prompt: 'mostrar reservas desde (dd/mm/aaaa)').
-	fechaFin := Date fromString: (Prompter prompt: 'mostrar reservas hasta (dd/mm/aaaa').
+	fechaFin := Date fromString: (Prompter prompt: 'mostrar reservas hasta (dd/mm/aaaa)').
 	self listarReservas: fechaInicio hasta: fechaFin.
 ].
 (op == $3) ifTrue: [
@@ -384,7 +416,7 @@ cargaDatos
 id:= Prompter prompt: 'ingrese el id'.
 puntoInicio:= Prompter prompt: 'ingrese el punto de inicio'.
 puntoFinal:= Prompter prompt: 'ingrese el punto final'.
-distancia:= (Prompter prompt: 'ingrese la distancia') asNumber.!
+distancia:= (Prompter prompt: 'ingrese la distancia') asNumber asFloat.!
 
 distancia
 ^distancia.!
@@ -484,7 +516,7 @@ modelo:= Prompter prompt: 'ingrese el modelo'.
 chofer:= Prompter prompt: 'ingrese el nombre y apellido del chofer'.
 estado:= 1. "los posibles estados, según el enunciado, son disponible y no disponible. 1 para disponible, 0 para no disponible."
 maxPasajeros:= (Prompter prompt: 'ingrese la cantidad máxima de pasajeros')asNumber.
-precioKm:= (Prompter prompt: 'ingrese el precio por kilómetro')asFloat.
+precioKm:= (Prompter prompt: 'ingrese el precio por kilómetro')asNumber asFloat.
 !
 
 chofer
