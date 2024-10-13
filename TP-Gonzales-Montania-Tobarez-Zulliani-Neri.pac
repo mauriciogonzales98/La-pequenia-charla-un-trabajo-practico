@@ -128,7 +128,7 @@ res id: Reserva Id.
 	Transcript show: (precio)printString.
 ] ifFalse: [
 	(ruta distancia >= 500) ifTrue: [
-precio:=(vehiculo precioKm * ruta distancia - ( (vehiculo precioKm * ruta distancia)* Estandar Descuento))
+precio:=((vehiculo precioKm * ruta distancia )- ( (vehiculo precioKm * ruta distancia)* Estandar Descuento))
 	]
 	ifFalse:[
 	precio:=(vehiculo precioKm * ruta distancia)
