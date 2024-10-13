@@ -416,7 +416,7 @@ cargaDatos
 id:= Prompter prompt: 'ingrese el id'.
 puntoInicio:= Prompter prompt: 'ingrese el punto de inicio'.
 puntoFinal:= Prompter prompt: 'ingrese el punto final'.
-distancia:= (Prompter prompt: 'ingrese la distancia') asNumber asFloat.!
+distancia:= (Prompter prompt: 'ingrese la distancia en kilometros') asNumber asFloat.!
 
 distancia
 ^distancia.!
