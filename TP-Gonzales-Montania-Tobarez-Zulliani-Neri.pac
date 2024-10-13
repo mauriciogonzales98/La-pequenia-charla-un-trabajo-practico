@@ -95,13 +95,13 @@ altaReserva
 idRuta := (Prompter prompt: 'ingrese el id de la ruta') asNumber.
 
 pasajeros := (Prompter prompt: 'Ingrese la cantidad de pasajeros') asNumber.
-vehiculo := vehiculos detect: [ :unVehiculo | (unVehiculo maxPasajeros >= pasajeros ) ] ifNone: [ nil ].
+vehiculo := vehiculos detect: [ :unVehiculo | (unVehiculo maxPasajeros >= pasajeros ) and: [unVehiculo estado = 1] ] ifNone: [ nil ].
 (vehiculo isNil) ifTrue: [^MessageBox notify: 'No hay vehiculos disponibles para la cantidad de pasajeros especificada'] .
 
 res:= Reserva new.
 
 ruta := rutas detect: [ :unaRuta | (unaRuta id ) = idRuta ].
-
+"Falta cambiar estado del vehículo guardado en la reserva como no disponible"
 res ruta: ruta.
 res vehiculo: vehiculo.
 res cantPasajeros: pasajeros.
@@ -209,7 +209,7 @@ listarReservas: fechaInicio hasta: fechaFin
 	|res|
 	res :=reservas select: [ :unaRes | ((unaRes fecha) >= fechaInicio) and: [(unaRes fecha) <= fechaFin ] ].
 	res := reservas asSortedCollection: [ :unaRes :otraRes | (unaRes fecha > otraRes fecha) ].
-	Transcript show: 'Reservas desde ', (fechaInicio printString), 'hasta ', (fechaFin printString) ; cr.
+	Transcript show: 'Reservas desde ', (fechaInicio printString), 'hasta', (fechaFin printString) ; cr.
 	"Transcript show: 'Reservas entre', (fechaInicio asString), ' y ', (fechaFin asString); cr."
 	res do: [ :unaRes |
 		unaRes mostrar.
@@ -220,10 +220,10 @@ listarReservas: fechaInicio hasta: fechaFin
 menu
 | op  res fechaInicio fechaFin|
 
-res := ChoicePrompter choices: #('1)  Solicitar Reserva.' '2) Listado de Reservas.' '3) Agregar vehiculo.' '4) Agregar Usuario.' '5) Agregar Ruta.' '6) Salir.').
+res := ChoicePrompter choices: #('1)  Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4) Agregar Usuario' '5) Agregar Ruta' '6) Modificar Descuento para Vehículos Estandar' '7) Modificar Seguro para vehículos de lujo' '8) Salir').
 op := (res first).
 
-[ op = $6 ] whileFalse: [
+[ op = $8 ] whileFalse: [
 (op == $1) ifTrue: [
 	self altaReserva.
 ].
@@ -234,21 +234,32 @@ op := (res first).
 	fechaFin := Prompter prompt: 'Ingrese la fecha de fin'.
 	fechaFin := Date fromString: fechaFin."
 	
-	"Esto hay que borrarlo, es solo para probarlo mas facil"
 	fechaInicio := Date fromString:( Prompter prompt: 'mostrar reservas desde (dd/mm/aaaa)').
-	fechaFin := Date fromString: (Prompter prompt: 'mostrar reservas hasta (dd/mm/aaaa)').
+	fechaFin := Date fromString: (Prompter prompt: 'mostrar reservas hasta (dd/mm/aaaa').
 	self listarReservas: fechaInicio hasta: fechaFin.
 ].
-(op== $3)ifTrue: [
-	self altaVehiculo
- ].
-(op== $4)ifTrue: [
+(op == $3) ifTrue: [
+	self altaVehiculo . 
+].
+(op == $4) ifTrue: [
 	self altaUsuario
- ].
-(op== $5)ifTrue: [
-	self altaRuta
- ].
-	res := ChoicePrompter choices: #('1)  Solicitar Reserva.' '2) Listado de Reservas.' '3) Agregar vehiculo.' '4) Agregar Usuario.' '5) Agregar Ruta.' '6) Salir.').
+].
+(op == $5) ifTrue: [
+	self altaRuta .
+].
+(op == $6) ifTrue: [
+"Dado que los descuentos son porcentuales, los accessors multiplican y dividen el monto mostrado e ingresado respectivamente para que se muestre con signo porcentual pero se use como fracción durante el cálculo del precio. Así, total=precio*descuento -TM"
+	MessageBox notify: 'El descuento actual es del ', (Estandar Descuento)printString ,'%'.
+	Estandar Descuento: ((Prompter prompt: 'ingrese el nuevo descuento como porcentaje (sin el simbolo %)')asNumber).
+	MessageBox notify: 'El nuevo porcentaje del seguro es ', (Estandar Descuento)printString, '%'.
+	
+].
+(op == $7) ifTrue: [
+	MessageBox notify: 'El monto actual del seguro es de $', (Lujo Seguro)printString.
+	Lujo Seguro: (Prompter prompt: 'ingrese el nuevo monto del seguro en pesos') .
+	MessageBox notify: 'El nuevo monto del seguro es de $', (Lujo Seguro)printString.
+].
+	res := ChoicePrompter choices: #('1)  Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4) Agregar Usuario.' '5) Agregar Ruta.' '6) Modificar Descuento para Vehículos Estandar.' '7) Modificar Seguro para vehículos de lujo.' '8) Salir.').
 	op := (res first).
 ].!
 
@@ -556,6 +567,19 @@ esDeLujo
 esDeLujo!public! !
 !
 
+!Estandar class methodsFor!
+
+Descuento
+^(Descuento * 100).!
+
+Descuento:unDescuento
+Descuento:=(unDescuento / 100).! !
+
+!Estandar class categoriesForMethods!
+Descuento!public! !
+Descuento:!public! !
+!
+
 Lujo guid: (GUID fromString: '{1b18f29e-807e-4153-a612-6627fb07df15}')!
 
 Lujo comment: ''!
@@ -569,6 +593,19 @@ esDeLujo
 
 !Lujo categoriesForMethods!
 esDeLujo!public! !
+!
+
+!Lujo class methodsFor!
+
+Seguro
+^Seguro!
+
+Seguro:unSeguro
+Seguro:=unSeguro.! !
+
+!Lujo class categoriesForMethods!
+Seguro!public! !
+Seguro:!public! !
 !
 
 "Binary Globals"!
