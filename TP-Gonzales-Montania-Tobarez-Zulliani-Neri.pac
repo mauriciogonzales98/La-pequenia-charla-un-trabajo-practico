@@ -124,18 +124,18 @@ res id: Reserva Id.
 
 "Calculo de precio"
 (vehiculo esDeLujo) ifTrue: [ 
-	precio:= vehiculo precioKm + Lujo Seguro.
+	precio:= (vehiculo precioKm * vehiculo distancia) + Lujo Seguro.
 	Transcript show: (precio)printString.
 ] ifFalse: [
 	(ruta distancia >= 500) ifTrue: [
-precio:=(vehiculo precioKm - ( vehiculo precioKm * Estandar Descuento))
+precio:=(vehiculo precioKm * ruta distancia - ( (vehiculo precioKm * ruta distancia)* Estandar Descuento))
 	]
 	ifFalse:[
-	precio:=(vehiculo precioKm)
+	precio:=(vehiculo precioKm * ruta distancia)
 	]
 ].
 "Muestro el precio"
-Transcript show: 'El precio de su viaje es de $', (precio)printString, ' pesos'.
+Transcript show: 'El precio de su viaje es de $', (precio)printString, ' pesos'; cr.
 reservas add: res.!
 
 altaRuta
@@ -216,19 +216,19 @@ crearDatosDePrueba
 	usuario dni: '1'.
 	usuario nombre: 'Pedro'.
 	usuario apellido: ' De Mendoza'.
-	usuarios add:usuario.
+	usuarios add: usuario.
 
 	usuario:= Usuario new.
 	usuario dni: '2'.
 	usuario nombre:  'Franco'.
 	usuario apellido:  'Colapinto'.
-	usuarios add:usuario.
+	usuarios add: usuario.
 
 	usuario:= Usuario new.
-	usuario dni: '1'.
+	usuario dni: '3'.
 	usuario nombre:  'Marco'.
 	usuario apellido: 'Aurelio'.
-	usuarios add:usuario.!
+	usuarios add: usuario.!
 
 init
 	usuarios := OrderedCollection new.
@@ -257,6 +257,7 @@ op := (res first).
 
 [ op = $8 ] whileFalse: [
 (op == $1) ifTrue: [
+	Transcript clear.
 	self altaReserva.
 ].
 (op == $2) ifTrue: [
@@ -268,6 +269,7 @@ op := (res first).
 	
 	fechaInicio := Date fromString:( Prompter prompt: 'mostrar reservas desde (dd/mm/aaaa)').
 	fechaFin := Date fromString: (Prompter prompt: 'mostrar reservas hasta (dd/mm/aaaa)').
+	Transcript clear.
 	self listarReservas: fechaInicio hasta: fechaFin.
 ].
 (op == $3) ifTrue: [
@@ -293,14 +295,7 @@ op := (res first).
 ].
 	res := ChoicePrompter choices: #('1)  Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4) Agregar Usuario.' '5) Agregar Ruta.' '6) Modificar Descuento para Vehículos Estandar.' '7) Modificar Seguro para vehículos de lujo.' '8) Salir.').
 	op := (res first).
-].!
-
-solicitarReserva
-	| ruta pasajeros id |
-	ruta := Prompter prompt: 'Ingrese id de la ruta'.
-	pasajeros := (Prompter prompt: 'Ingrese la cantidad de pasajeros') asNumber. 
-	id := self buscarVehiculo: pasajeros.
-	! !
+].! !
 
 !Empresa categoriesForMethods!
 agregar:!public! !
@@ -312,7 +307,6 @@ crearDatosDePrueba!public! !
 init!public! !
 listarReservas:hasta:!public! !
 menu!public! !
-solicitarReserva!public! !
 !
 
 Reserva guid: (GUID fromString: '{e6274a1e-4d74-4b92-b7d5-20065e8fefa7}')!
@@ -344,14 +338,15 @@ id: unId
 mostrar
 	| tipo |
 	(vehiculo esDeLujo) ifTrue: [tipo := 'de Lujo'] ifFalse:[ tipo :='estandar'].
-	Transcript show: (fecha printString), ' ',
+	Transcript show: '* ', (fecha printString), ' ',
 	(usuario nombre),  ' ',
 	(usuario apellido) , ' ', 
 	(ruta puntoInicio) , '-',
 	(ruta puntoFinal) , ' ',
-	'Distancia: ', (ruta distancia) printString , ' ',
-	'Vehiculo: ' ,((vehiculo id) printString) , ' ',
-	tipo, ' '.!
+	'Distancia: ', (ruta distancia) printString , 'Km ',
+	'id del Vehiculo: ' ,((vehiculo id) printString) , ' de tipo',
+	tipo, '. ';
+	cr.!
 
 ruta
 ^ruta.!
