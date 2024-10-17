@@ -37,7 +37,7 @@ Object subclass: #Empresa
 	classInstanceVariableNames: ''!
 
 Object subclass: #Reserva
-	instanceVariableNames: 'ruta fecha vehiculo cantPasajeros usuario id precio'
+	instanceVariableNames: 'ruta fecha vehiculo cantPasajeros usuario id'
 	classVariableNames: 'Id'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -86,9 +86,6 @@ Empresa comment: ''!
 
 !Empresa methodsFor!
 
-agregar: usuario
-usuarios add: usuario.!
-
 altaReserva
 |res pasajeros vehiculo usuario dni fecha idRuta ruta precio|
 
@@ -123,7 +120,7 @@ Reserva incrementarId.
 res id: Reserva Id.
 
 "Calculo de precio"
-"(vehiculo esDeLujo) ifTrue: [ 
+(vehiculo esDeLujo) ifTrue: [ 
 	precio:= (vehiculo precioKm * vehiculo distancia) + Lujo Seguro.
 	Transcript show: (precio)printString.
 ] ifFalse: [
@@ -133,9 +130,7 @@ precio:=((vehiculo precioKm * ruta distancia )- ( (vehiculo precioKm * ruta dist
 	ifFalse:[
 	precio:=(vehiculo precioKm * ruta distancia)
 	]
-]."
-precio:=( vehiculo calculoPrecio: (ruta distancia)).
-res precio: precio.
+].
 "Muestro el precio"
 Transcript show: 'El precio de su viaje es de $', (precio)printString, ' pesos'; cr.
 reservas add: res.!
@@ -197,7 +192,7 @@ crearDatosDePrueba
 	ruta id: 1.
 	ruta puntoInicio: 'Rosario'.
 	ruta puntoFinal: 'BsAs'.
-	ruta distancia: 600.
+	ruta distancia: 400.
 	rutas add: ruta.
 
 	ruta := Ruta new.
@@ -237,8 +232,6 @@ init
 	vehiculos := OrderedCollection new.
 	reservas := OrderedCollection new.
 	rutas := OrderedCollection new.
-	Estandar Descuento: 10.
-	Lujo Seguro: 10000.
 	Reserva inicializarId.!
 
 listarReservas: fechaInicio hasta: fechaFin
@@ -256,7 +249,7 @@ listarReservas: fechaInicio hasta: fechaFin
 menu
 | op  res fechaInicio fechaFin|
 
-res := ChoicePrompter choices: #('1)  Solicitar Reserva' '2) Listado de Reservas' '3) Agregar Vehiculo' '4) Agregar Usuario' '5) Agregar Ruta' '6) Modificar Descuento para Vehículos Estandar' '7) Modificar Seguro para Vehículos de Lujo' '8) Salir').
+res := ChoicePrompter choices: #('1)  Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4) Agregar Usuario' '5) Agregar Ruta' '6) Modificar Descuento para Vehículos Estandar' '7) Modificar Seguro para vehículos de lujo' '8) Salir').
 op := (res first).
 
 [ op = $8 ] whileFalse: [
@@ -283,7 +276,7 @@ op := (res first).
 	self altaUsuario
 ].
 (op == $5) ifTrue: [
-	self altaRuta.
+	self altaRuta .
 ].
 (op == $6) ifTrue: [
 "Dado que los descuentos son porcentuales, los accessors multiplican y dividen el monto mostrado e ingresado respectivamente para que se muestre con signo porcentual pero se use como fracción durante el cálculo del precio. Así, total=precio*descuento -TM"
@@ -297,12 +290,11 @@ op := (res first).
 	Lujo Seguro: (Prompter prompt: 'ingrese el nuevo monto del seguro en pesos') .
 	MessageBox notify: 'El nuevo monto del seguro es de $', (Lujo Seguro)printString.
 ].
-	res := ChoicePrompter choices: #('1)  Solicitar Reserva' '2) Listado de Reservas' '3) Agregar Vehiculo' '4) Agregar Usuario' '5) Agregar Ruta' '6) Modificar Descuento para Vehículos Estandar' '7) Modificar Seguro para Vehículos de Lujo' '8) Salir').
+	res := ChoicePrompter choices: #('1)  Solicitar reserva.' '2) Listado de reservas.' '3) Agregar vehiculo.' '4) Agregar Usuario.' '5) Agregar Ruta.' '6) Modificar Descuento para Vehículos Estandar.' '7) Modificar Seguro para vehículos de lujo.' '8) Salir.').
 	op := (res first).
 ].! !
 
 !Empresa categoriesForMethods!
-agregar:!public! !
 altaReserva!public! !
 altaRuta!public! !
 altaUsuario!public! !
@@ -343,21 +335,14 @@ mostrar
 	| tipo |
 	(vehiculo esDeLujo) ifTrue: [tipo := 'de Lujo'] ifFalse:[ tipo :='estandar'].
 	Transcript show: '* ', (fecha printString), ' ',
-	'USUARIO: ', (usuario nombre),  ' ',
+	(usuario nombre),  ' ',
 	(usuario apellido) , ' ', 
-	'RUTA: ', (ruta puntoInicio) , '-',
+	(ruta puntoInicio) , '-',
 	(ruta puntoFinal) , ' ',
-	'Distancia: ', (ruta distancia) printString , ' Km ',
-	'id del Vehiculo: ' ,((vehiculo id) printString) , ' de tipo ',
-	tipo, '. ', 
-	'precio: $', (precio)printString;
+	'Distancia: ', (ruta distancia) printString , 'Km ',
+	'id del Vehiculo: ' ,((vehiculo id) printString) , ' de tipo',
+	tipo, '. ';
 	cr.!
-
-precio
-^precio.!
-
-precio: unPrecio
-precio:= unPrecio.!
 
 ruta
 ^ruta.!
@@ -385,8 +370,6 @@ fecha:!public! !
 id!public! !
 id:!public! !
 mostrar!public! !
-precio!public! !
-precio:!public! !
 ruta!public! !
 ruta:!public! !
 usuario!public! !
@@ -481,11 +464,6 @@ cargaDatos
 	apellido:= Prompter prompt: 'Apellido del nuevo usuario'.
 	dni:= Prompter prompt: 'Dni del nuevo usuario'.!
 
-crear
-	nombre:= Prompter prompt: 'Nombre del nuevo usuario'.
-	apellido:= Prompter prompt: 'Apellido del nuevo usuario'.
-	dni:= Prompter prompt: 'Dni del nuevo usuario'.!
-
 dni
 ^dni.!
 
@@ -502,7 +480,6 @@ nombre: unNombre
 apellido!public! !
 apellido:!public! !
 cargaDatos!public! !
-crear!public! !
 dni!public! !
 dni:!public! !
 nombre!public! !
@@ -600,19 +577,10 @@ Estandar comment: ''!
 
 !Estandar methodsFor!
 
-calculoPrecio: km
-|precio|
-(km>= 500) ifTrue: [
-precio:= precioKm * km * (1-Descuento).
-]
-ifFalse: [precio:= precioKm * km].
-^precio.!
-
 esDeLujo
 ^false! !
 
 !Estandar categoriesForMethods!
-calculoPrecio:!public! !
 esDeLujo!public! !
 !
 
@@ -637,16 +605,10 @@ Lujo comment: ''!
 
 !Lujo methodsFor!
 
-calculoPrecio: km
-|precio|
-precio:= precioKm * km + Seguro.
-^precio.!
-
 esDeLujo
 ^true! !
 
 !Lujo categoriesForMethods!
-calculoPrecio:!public! !
 esDeLujo!public! !
 !
 
