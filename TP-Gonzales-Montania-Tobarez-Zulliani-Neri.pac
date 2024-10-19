@@ -3,6 +3,7 @@ package := Package name: 'TP-Gonzales-Montania-Tobarez-Zulliani-Neri'.
 package paxVersion: 1;
 	basicComment: ''.
 
+
 package classNames
 	add: #Empresa;
 	add: #Estandar;
@@ -35,42 +36,41 @@ Object subclass: #Empresa
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-
 Object subclass: #Reserva
 	instanceVariableNames: 'ruta fecha vehiculo cantPasajeros usuario id precio'
 	classVariableNames: 'Id'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-
 Object subclass: #Ruta
 	instanceVariableNames: 'id puntoInicio puntoFinal distancia'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-
 Object subclass: #Usuario
 	instanceVariableNames: 'nombre apellido dni'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-
 Object subclass: #Vehiculo
 	instanceVariableNames: 'id marca modelo chofer estado maxPasajeros precioKm'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-
 Vehiculo subclass: #Estandar
 	instanceVariableNames: ''
 	classVariableNames: 'Descuento'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-
 Vehiculo subclass: #Lujo
 	instanceVariableNames: ''
 	classVariableNames: 'Seguro'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
+
+"Global Aliases"!
+
+
+"Loose Methods"!
 
 "End of package definition"!
 
@@ -79,11 +79,8 @@ Vehiculo subclass: #Lujo
 "Classes"!
 
 Empresa guid: (GUID fromString: '{578b5b44-3b71-41f5-b076-a7e82fa15aed}')!
-
 Empresa comment: ''!
-
 !Empresa categoriesForClass!Kernel-Objects! !
-
 !Empresa methodsFor!
 
 agregar: usuario
@@ -93,6 +90,8 @@ altaReserva
 |res pasajeros vehiculo usuario dni fecha idRuta ruta precio|
 
 idRuta := (Prompter prompt: 'ingrese el id de la ruta') asNumber.
+ruta := rutas detect: [ :unaRuta | (unaRuta id ) = idRuta ] ifNone: [ nil ].
+(ruta isNil) ifTrue: [^MessageBox notify: 'Esta ruta no existe'] .
 
 pasajeros := (Prompter prompt: 'Ingrese la cantidad de pasajeros') asNumber.
 vehiculo := vehiculos detect: [ :unVehiculo | (unVehiculo maxPasajeros >= pasajeros ) and: [unVehiculo estado = 1] ] ifNone: [ nil ].
@@ -100,14 +99,12 @@ vehiculo := vehiculos detect: [ :unVehiculo | (unVehiculo maxPasajeros >= pasaje
 
 res:= Reserva new.
 
-ruta := rutas detect: [ :unaRuta | (unaRuta id ) = idRuta ].
 vehiculo toggleEstado.
 res ruta: ruta.
 res vehiculo: vehiculo.
 res cantPasajeros: pasajeros.
 
 dni := Prompter prompt: 'ingrese su dni'.
-"El metodo detect devuelve un objeto."
 usuario := usuarios detect: [ :unUsuario | (unUsuario dni ) = dni ] ifNone: [ nil ].
 (usuario isNil) ifTrue: [
 self altaUsuario.
@@ -122,18 +119,6 @@ res fecha: (Date fromString: fecha).
 Reserva incrementarId.
 res id: Reserva Id.
 
-"Calculo de precio"
-"(vehiculo esDeLujo) ifTrue: [ 
-	precio:= (vehiculo precioKm * vehiculo distancia) + Lujo Seguro.
-	Transcript show: (precio)printString.
-] ifFalse: [
-	(ruta distancia >= 500) ifTrue: [
-precio:=((vehiculo precioKm * ruta distancia )- ( (vehiculo precioKm * ruta distancia)* Estandar Descuento))
-	]
-	ifFalse:[
-	precio:=(vehiculo precioKm * ruta distancia)
-	]
-]."
 precio:=( vehiculo calculoPrecio: (ruta distancia)).
 res precio: precio.
 "Muestro el precio"
@@ -170,7 +155,7 @@ crearDatosDePrueba
 	vehiculo chofer: 'Juan'.
 	vehiculo estado:  1.
 	vehiculo maxPasajeros: 4.
-	vehiculo precioKm: 40.
+	vehiculo precioKm: 40.0.
 	vehiculos add: vehiculo.
 
 	vehiculo := Lujo new.
@@ -180,7 +165,7 @@ crearDatosDePrueba
 	vehiculo chofer: 'Jose'.
 	vehiculo estado:  1.
 	vehiculo maxPasajeros: 3.
-	vehiculo precioKm: 60.
+	vehiculo precioKm: 60.0.
 	vehiculos add: vehiculo.
 
 	vehiculo := Estandar  new.
@@ -190,7 +175,7 @@ crearDatosDePrueba
 	vehiculo chofer: 'Mario'.
 	vehiculo estado:  1.
 	vehiculo maxPasajeros: 3.
-	vehiculo precioKm: 38.
+	vehiculo precioKm: 38.0.
 	vehiculos add: vehiculo.
 
 	ruta := Ruta new.
@@ -243,15 +228,13 @@ init
 
 listarReservas: fechaInicio hasta: fechaFin
 	|res|
-	res :=reservas select: [ :unaRes | ((unaRes fecha) >= fechaInicio) and: [(unaRes fecha) <= fechaFin ] ].
-	res := reservas asSortedCollection: [ :unaRes :otraRes | (unaRes fecha > otraRes fecha) ].
+	res :=reservas select: [ :unaRes | (((unaRes fecha) >= fechaInicio) and: [(unaRes fecha) <= fechaFin ] )].
+	res := res asSortedCollection: [ :unaRes :otraRes | (unaRes fecha > otraRes fecha) ].
 	Transcript show: 'Reservas desde ', (fechaInicio printString), '    ',  'hasta ', (fechaFin printString) ; cr.
-	"Transcript show: 'Reservas entre', (fechaInicio asString), ' y ', (fechaFin asString); cr."
 	res do: [ :unaRes |
 		unaRes mostrar.
 		Transcript cr.
-	].
-	!
+	].!
 
 menu
 | op  res fechaInicio fechaFin|
@@ -280,7 +263,7 @@ op := (res first).
 	self altaVehiculo . 
 ].
 (op == $4) ifTrue: [
-	self altaUsuario
+	self altaUsuario.
 ].
 (op == $5) ifTrue: [
 	self altaRuta.
@@ -300,7 +283,6 @@ op := (res first).
 	res := ChoicePrompter choices: #('1)  Solicitar Reserva' '2) Listado de Reservas' '3) Agregar Vehiculo' '4) Agregar Usuario' '5) Agregar Ruta' '6) Modificar Descuento para Vehículos Estandar' '7) Modificar Seguro para Vehículos de Lujo' '8) Salir').
 	op := (res first).
 ].! !
-
 !Empresa categoriesForMethods!
 agregar:!public! !
 altaReserva!public! !
@@ -314,11 +296,8 @@ menu!public! !
 !
 
 Reserva guid: (GUID fromString: '{e6274a1e-4d74-4b92-b7d5-20065e8fefa7}')!
-
 Reserva comment: ''!
-
 !Reserva categoriesForClass!Kernel-Objects! !
-
 !Reserva methodsFor!
 
 cantPasajeros
@@ -376,7 +355,6 @@ vehiculo
 
 vehiculo: unvehiculo
 vehiculo:= unvehiculo.! !
-
 !Reserva categoriesForMethods!
 cantPasajeros!public! !
 cantPasajeros:!public! !
@@ -405,7 +383,6 @@ incrementarId
 
 inicializarId
 	Id := 0.! !
-
 !Reserva class categoriesForMethods!
 Id!public! !
 incrementarId!public! !
@@ -413,11 +390,8 @@ inicializarId!public! !
 !
 
 Ruta guid: (GUID fromString: '{25d87daf-3183-48db-af2e-8c2c68e9be6b}')!
-
 Ruta comment: ''!
-
 !Ruta categoriesForClass!Kernel-Objects! !
-
 !Ruta methodsFor!
 
 cargaDatos
@@ -449,7 +423,6 @@ puntoInicio
 
 puntoInicio: inicio
 	puntoInicio:= inicio.! !
-
 !Ruta categoriesForMethods!
 cargaDatos!public! !
 distancia!public! !
@@ -463,11 +436,8 @@ puntoInicio:!public! !
 !
 
 Usuario guid: (GUID fromString: '{8649aac4-806a-42ee-9723-835359330548}')!
-
 Usuario comment: ''!
-
 !Usuario categoriesForClass!Kernel-Objects! !
-
 !Usuario methodsFor!
 
 apellido
@@ -477,11 +447,6 @@ apellido: unApellido
 	apellido := unApellido.!
 
 cargaDatos
-	nombre:= Prompter prompt: 'Nombre del nuevo usuario'.
-	apellido:= Prompter prompt: 'Apellido del nuevo usuario'.
-	dni:= Prompter prompt: 'Dni del nuevo usuario'.!
-
-crear
 	nombre:= Prompter prompt: 'Nombre del nuevo usuario'.
 	apellido:= Prompter prompt: 'Apellido del nuevo usuario'.
 	dni:= Prompter prompt: 'Dni del nuevo usuario'.!
@@ -497,12 +462,10 @@ nombre
 
 nombre: unNombre
 	nombre := unNombre.! !
-
 !Usuario categoriesForMethods!
 apellido!public! !
 apellido:!public! !
 cargaDatos!public! !
-crear!public! !
 dni!public! !
 dni:!public! !
 nombre!public! !
@@ -510,15 +473,12 @@ nombre:!public! !
 !
 
 Vehiculo guid: (GUID fromString: '{850cd6b3-a183-4f19-9215-7188f6997598}')!
-
 Vehiculo comment: ''!
-
 !Vehiculo categoriesForClass!Kernel-Objects! !
-
 !Vehiculo methodsFor!
 
 cargaDatos
-id:= Prompter prompt: 'ingrese el id'.
+id:= (Prompter prompt: 'ingrese el id')asNumber.
 marca:= Prompter prompt: 'ingrese la marca'.
 modelo:= Prompter prompt: 'ingrese el modelo'.
 chofer:= Prompter prompt: 'ingrese el nombre y apellido del chofer'.
@@ -572,7 +532,6 @@ precioKm: precio
 
 toggleEstado
 	(estado == 1) ifTrue: [self estado: 0] ifFalse: [ self estado: 1 ].! !
-
 !Vehiculo categoriesForMethods!
 cargaDatos!public! !
 chofer!public! !
@@ -593,11 +552,8 @@ toggleEstado!public! !
 !
 
 Estandar guid: (GUID fromString: '{fd90603d-a96c-41db-ab58-899f82e77bd1}')!
-
 Estandar comment: ''!
-
 !Estandar categoriesForClass!Kernel-Objects! !
-
 !Estandar methodsFor!
 
 calculoPrecio: km
@@ -610,7 +566,6 @@ ifFalse: [precio:= precioKm * km].
 
 esDeLujo
 ^false! !
-
 !Estandar categoriesForMethods!
 calculoPrecio:!public! !
 esDeLujo!public! !
@@ -623,18 +578,14 @@ Descuento
 
 Descuento:unDescuento
 Descuento:=(unDescuento / 100).! !
-
 !Estandar class categoriesForMethods!
 Descuento!public! !
 Descuento:!public! !
 !
 
 Lujo guid: (GUID fromString: '{1b18f29e-807e-4153-a612-6627fb07df15}')!
-
 Lujo comment: ''!
-
 !Lujo categoriesForClass!Kernel-Objects! !
-
 !Lujo methodsFor!
 
 calculoPrecio: km
@@ -644,7 +595,6 @@ precio:= precioKm * km + Seguro.
 
 esDeLujo
 ^true! !
-
 !Lujo categoriesForMethods!
 calculoPrecio:!public! !
 esDeLujo!public! !
@@ -657,7 +607,6 @@ Seguro
 
 Seguro:unSeguro
 Seguro:=unSeguro.! !
-
 !Lujo class categoriesForMethods!
 Seguro!public! !
 Seguro:!public! !
